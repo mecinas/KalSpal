@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: <Widget>[
                         SizedBox(height: 25),
                         Text(
-                          "KalSpal",
+                          "Zaloguj się",
                           style: Theme.of(context).textTheme.headline2,
                         ),
                         SizedBox(height: 20),
@@ -133,8 +133,6 @@ class _LoginPageState extends State<LoginPage> {
                               vertical: 12, horizontal: 80),
                           onPressed: () {
                             if (validateAndSave()) {
-                              print(loginRequestModel.toJson());
-
                               setState(() {
                                 isApiCalled = true;
                               });

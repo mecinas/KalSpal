@@ -18,11 +18,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: PRIMARY_COLOR,
         accentColor: SECONDARY_COLOR,
+        buttonColor: SECONDARY_COLOR,
         textTheme: TextTheme(
           headline1: TextStyle(fontSize: 22.0, color: SECONDARY_COLOR),
           headline2: TextStyle(
             fontSize: 24.0,
             fontWeight: FontWeight.w700,
+            color: SECONDARY_COLOR,
+          ),
+          headline3: TextStyle(
+            fontSize: 22.0,
             color: SECONDARY_COLOR,
           ),
           bodyText1: TextStyle(
