@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'circle_button.dart';
 
 class Profile extends StatelessWidget {
-  final Future<void> Function() logoutAction;
+  final Future<void> Function() logoutAction /* , startWorkout */;
+  final void Function(String) startWorkout;
   final String name;
   final String picture;
 
-  const Profile(this.logoutAction, this.name, this.picture, {Key key})
+  const Profile(this.logoutAction, this.startWorkout, this.name, this.picture,
+      {Key key})
       : super(key: key);
 
   @override
@@ -28,22 +30,25 @@ class Profile extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        Text('Name: $name'),
-        const SizedBox(height: 48),
+        Text(
+          '$name',
+          style: TextStyle(color: Theme.of(context).accentColor),
+        ),
+        const SizedBox(height: 60),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             CircleButton(
-              icon: Icons.run_circle_rounded,
+              icon: Icons.directions_run_rounded,
               iconColor: Theme.of(context).primaryColor,
               buttonColor: Theme.of(context).accentColor,
-              onPressed: () {},
+              onPressed: () => startWorkout("run"),
             ),
             CircleButton(
               icon: Icons.directions_bike_rounded,
               iconColor: Theme.of(context).primaryColor,
               buttonColor: Theme.of(context).accentColor,
-              onPressed: () {},
+              onPressed: () => startWorkout("cycling"),
             ),
           ],
         ),
@@ -57,10 +62,4 @@ class Profile extends StatelessWidget {
       ],
     );
   }
-
-/*   void loadWorkoutPage(workoutType){
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => DashboardPage(logoutAction, name, picture),
-        ));
-  } */
 }

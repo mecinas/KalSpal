@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+import 'package:kalspal/models/screen_arguments.dart';
+import 'package:kalspal/pages/workout_page.dart';
 
 import 'package:kalspal/widgets/login.dart';
 import 'package:kalspal/widgets/profile.dart';
@@ -46,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
         child: isBusy
             ? const CircularProgressIndicator()
             : isLoggedIn
-                ? Profile(logoutAction, name, picture)
+                ? Profile(logoutAction, startWorkout, name, picture)
                 : Login(loginAction, errorMessage),
       ),
     );
@@ -157,5 +159,17 @@ class _LoginPageState extends State<LoginPage> {
       isLoggedIn = false;
       isBusy = false;
     });
+  }
+
+  void startWorkout(String workout_type) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WorkoutPage(),
+        settings: RouteSettings(
+          arguments: workout_type,
+        ),
+      ),
+    );
   }
 }

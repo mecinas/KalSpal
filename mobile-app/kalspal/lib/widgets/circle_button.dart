@@ -12,7 +12,7 @@ class CircleButton extends StatelessWidget {
     this.iconColor,
     this.buttonColor,
     this.onPressed,
-    this.iconSize = 70.0,
+    this.iconSize = 60.0,
     this.paddingSize = 15.0,
   }) : super(key: key);
 
