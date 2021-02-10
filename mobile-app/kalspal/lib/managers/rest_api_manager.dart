@@ -22,10 +22,11 @@ class RestApiManager {
     }
   }
 
-  Future<AddWorkoutResponseModel> addWorkout(
+/*   Future<AddWorkoutResponseModel> addWorkout(
       AddWorkoutRequestModel requestModel) async {
-    final response =
-        await http.post(URL + "/addWorkout", body: requestModel.toJson());
+    final response = await http.post(URL + "/addWorkout",
+        headers: {HttpHeaders.authorizationHeader: "Basic your_api_token_here"},
+        body: requestModel.toJson());
 
     // TODO - dodać obsługę statusu odpowiedzi z naszego API
     if (response.statusCode == 201) {
@@ -35,5 +36,5 @@ class RestApiManager {
     } else {
       throw Exception('Podczas wczytywania odpowiedzi wystapił błąd!');
     }
-  }
+  } */
 }

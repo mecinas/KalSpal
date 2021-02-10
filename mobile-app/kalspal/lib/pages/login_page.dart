@@ -30,6 +30,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool isBusy = false, isLoggedIn = false;
   String errorMessage, name, picture;
+  String access_token;
 
   @override
   void initState() {
@@ -130,8 +131,11 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final Map<String, Object> idToken = parseIdToken(result.idToken);
-      final Map<String, Object> profile =
-          await getUserDetails(result.accessToken);
+      setState(() {
+        access_token = result.accessToken;
+      });
+      //print(access_token);
+      final Map<String, Object> profile = await getUserDetails(access_token);
 
       await secureStorage.write(
           key: 'refresh_token', value: result.refreshToken);
@@ -167,8 +171,7 @@ class _LoginPageState extends State<LoginPage> {
       MaterialPageRoute(
         builder: (context) => WorkoutPage(),
         settings: RouteSettings(
-          arguments: workout_type,
-        ),
+            arguments: ScreenArguments(workout_type, access_token)),
       ),
     );
   }

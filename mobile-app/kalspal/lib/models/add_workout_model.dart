@@ -1,26 +1,19 @@
-// TODO - dopasować model żadania pod nasze API
-import 'package:location/location.dart';
-
 class AddWorkoutRequestModel {
-  String token;
-  List<LocationData> positions;
+  String workout;
 
   AddWorkoutRequestModel({
-    this.token,
-    this.positions,
+    this.workout,
   });
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
-      'token': token.trim(),
-      'positions': positions.toString(),
+      'workout': workout,
     };
 
     return map;
   }
 }
 
-// TODO - dopasować model odpowiedzi pod nasze API
 class AddWorkoutResponseModel {
   final String message;
 
