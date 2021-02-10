@@ -1,198 +1,161 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-import '../managers/rest_api_manager.dart';
-import '../models/login_model.dart';
-import '../widgets/progress.dart';
-import 'dashboard_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+
+import 'package:kalspal/widgets/login.dart';
+import 'package:kalspal/widgets/profile.dart';
+
+// AUTH0
+final String AUTH0_DOMAIN = DotEnv.env['AUTH0_DOMAIN'];
+final String AUTH0_CLIENT_ID = DotEnv.env['AUTH0_CLIENT_ID'];
+final String AUTH0_REDIRECT_URI = DotEnv.env['AUTH0_REDIRECT_URI'];
+final String AUTH0_ISSUER = 'https://$AUTH0_DOMAIN';
+
+final FlutterAppAuth appAuth = FlutterAppAuth();
+const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool isApiCalled = false, isPasswordHidden = true;
-
-  LoginRequestModel loginRequestModel;
-  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isBusy = false, isLoggedIn = false;
+  String errorMessage, name, picture;
 
   @override
   void initState() {
+    initAction();
     super.initState();
-    loginRequestModel = new LoginRequestModel();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Progress(
-      child: createLoginScreen(context),
-      isLoading: isApiCalled,
-    );
-  }
-
-  Widget createLoginScreen(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: Theme.of(context).accentColor,
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                  margin: EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Theme.of(context).primaryColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).hintColor.withOpacity(0.2),
-                        offset: Offset(0, 10),
-                        blurRadius: 20,
-                      )
-                    ],
-                  ),
-                  child: Form(
-                    key: globalFormKey,
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 25),
-                        Text(
-                          "Zaloguj się",
-                          style: Theme.of(context).textTheme.headline2,
-                        ),
-                        SizedBox(height: 20),
-                        new TextFormField(
-                          keyboardType: TextInputType.emailAddress,
-                          onSaved: (input) => loginRequestModel.email = input,
-                          validator: (input) => !input.contains('@')
-                              ? "Nieprawidłowy email!"
-                              : null,
-                          decoration: new InputDecoration(
-                            hintText: "Email",
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .accentColor
-                                        .withOpacity(0.2))),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).accentColor)),
-                            prefixIcon: Icon(
-                              Icons.email,
-                              color: Theme.of(context).accentColor,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        new TextFormField(
-                          style:
-                              TextStyle(color: Theme.of(context).accentColor),
-                          keyboardType: TextInputType.text,
-                          onSaved: (input) =>
-                              loginRequestModel.password = input,
-                          validator: (input) =>
-                              input.length < 8 ? "Nieprawidłowe hasło!" : null,
-                          obscureText: isPasswordHidden,
-                          decoration: new InputDecoration(
-                            hintText: "Hasło",
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .accentColor
-                                        .withOpacity(0.2))),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).accentColor)),
-                            prefixIcon: Icon(
-                              Icons.lock,
-                              color: Theme.of(context).accentColor,
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isPasswordHidden = !isPasswordHidden;
-                                });
-                              },
-                              color: Theme.of(context)
-                                  .accentColor
-                                  .withOpacity(0.4),
-                              icon: Icon(isPasswordHidden
-                                  ? Icons.visibility_off
-                                  : Icons.visibility),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        FlatButton(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 80),
-                          onPressed: () {
-                            if (validateAndSave()) {
-                              setState(() {
-                                isApiCalled = true;
-                              });
-
-                              RestApiManager restApiManager =
-                                  new RestApiManager();
-                              restApiManager
-                                  .login(loginRequestModel)
-                                  .then((response) {
-                                if (response != null) {
-                                  setState(() {
-                                    isApiCalled = false;
-                                  });
-
-                                  // TODO - dopasować obsługę odpowiedzi do naszego API
-                                  if (response.token.isNotEmpty) {
-                                    final snackBar = SnackBar(
-                                        content: Text("Witaj z powrotem"));
-                                    scaffoldKey.currentState
-                                        .showSnackBar(snackBar);
-                                    Navigator.of(context)
-                                        .pushReplacement(MaterialPageRoute(
-                                      builder: (context) => DashboardPage(),
-                                    ));
-                                  } else {
-                                    final snackBar =
-                                        SnackBar(content: Text(response.error));
-                                    scaffoldKey.currentState
-                                        .showSnackBar(snackBar);
-                                  }
-                                }
-                              });
-                            }
-                          },
-                          child: Text(
-                            "Zaloguj się",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          color: Theme.of(context).accentColor,
-                          shape: StadiumBorder(),
-                        ),
-                        SizedBox(height: 15),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+      /* appBar: AppBar(
+          title: const Text('Auth0 Demo'),
+        ), */
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Center(
+        child: isBusy
+            ? const CircularProgressIndicator()
+            : isLoggedIn
+                ? Profile(logoutAction, name, picture)
+                : Login(loginAction, errorMessage),
       ),
     );
   }
 
-  bool validateAndSave() {
-    final form = globalFormKey.currentState;
-    if (form.validate()) {
-      form.save();
-      return true;
+  Future<void> initAction() async {
+    final String storedRefreshToken =
+        await secureStorage.read(key: 'refresh_token');
+    if (storedRefreshToken == null) return;
+
+    setState(() {
+      isBusy = true;
+    });
+
+    try {
+      final TokenResponse response = await appAuth.token(TokenRequest(
+        AUTH0_CLIENT_ID,
+        AUTH0_REDIRECT_URI,
+        issuer: AUTH0_ISSUER,
+        refreshToken: storedRefreshToken,
+      ));
+
+      final Map<String, Object> idToken = parseIdToken(response.idToken);
+      final Map<String, Object> profile =
+          await getUserDetails(response.accessToken);
+
+      await secureStorage.write(
+          key: 'refresh_token', value: response.refreshToken);
+
+      setState(() {
+        isBusy = false;
+        isLoggedIn = true;
+        name = idToken['name'];
+        picture = profile['picture'];
+      });
+    } on Exception catch (e, s) {
+      debugPrint('error on refresh token: $e - stack: $s');
+      await logoutAction();
     }
-    return false;
+  }
+
+  Map<String, Object> parseIdToken(String idToken) {
+    final List<String> parts = idToken.split('.');
+    assert(parts.length == 3);
+
+    return jsonDecode(
+        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
+  }
+
+  Future<Map<String, Object>> getUserDetails(String accessToken) async {
+    final String url = 'https://$AUTH0_DOMAIN/userinfo';
+    final http.Response response = await http.get(
+      url,
+      headers: <String, String>{'Authorization': 'Bearer $accessToken'},
+    );
+
+    if (response.statusCode == 200)
+      return jsonDecode(response.body);
+    else
+      throw Exception('Failed to get user details');
+  }
+
+  Future<void> loginAction() async {
+    setState(() {
+      isBusy = true;
+      errorMessage = '';
+    });
+
+    try {
+      final AuthorizationTokenResponse result =
+          await appAuth.authorizeAndExchangeCode(
+        AuthorizationTokenRequest(
+          AUTH0_CLIENT_ID,
+          AUTH0_REDIRECT_URI,
+          issuer: 'https://$AUTH0_DOMAIN',
+          scopes: <String>['openid', 'profile', 'offline_access'],
+          // promptValues: ['login']
+        ),
+      );
+
+      final Map<String, Object> idToken = parseIdToken(result.idToken);
+      final Map<String, Object> profile =
+          await getUserDetails(result.accessToken);
+
+      await secureStorage.write(
+          key: 'refresh_token', value: result.refreshToken);
+
+      setState(() {
+        isBusy = false;
+        isLoggedIn = true;
+        name = idToken['name'];
+        picture = profile['picture'];
+      });
+    } on Exception catch (e, s) {
+      debugPrint('login error: $e - stack: $s');
+
+      setState(() {
+        isBusy = false;
+        isLoggedIn = false;
+        errorMessage = e.toString();
+      });
+    }
+  }
+
+  Future<void> logoutAction() async {
+    await secureStorage.delete(key: 'refresh_token');
+    setState(() {
+      isLoggedIn = false;
+      isBusy = false;
+    });
   }
 }

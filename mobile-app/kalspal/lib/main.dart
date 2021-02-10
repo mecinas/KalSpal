@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 import 'pages/login_page.dart';
 
 const APP_TITLE = "KalSpal";
 const PRIMARY_COLOR = Colors.white;
 const SECONDARY_COLOR = Colors.blue;
-void main() {
+Future main() async {
+  await DotEnv.load();
   runApp(MyApp());
 }
 
