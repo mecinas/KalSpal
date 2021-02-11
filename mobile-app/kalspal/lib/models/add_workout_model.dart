@@ -1,15 +1,12 @@
 class AddWorkoutRequestModel {
   String workout;
 
-  AddWorkoutRequestModel({
-    this.workout,
-  });
+  AddWorkoutRequestModel({this.workout});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       'workout': workout,
     };
-
     return map;
   }
 }

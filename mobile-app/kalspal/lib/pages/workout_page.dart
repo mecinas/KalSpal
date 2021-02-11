@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kalspal/managers/api_manager.dart';
 import 'package:kalspal/models/screen_arguments.dart';
 import 'package:location/location.dart';
 import 'package:gpx/gpx.dart';
@@ -20,6 +21,7 @@ class WorkoutPage extends StatefulWidget {
 class _WorkoutPageState extends State<WorkoutPage> {
   Location location = Location();
   List<Wpt> positions = [];
+  ApiManager apiManager = new ApiManager();
   bool isInitialized = true, isRunning = false, isFinished = false;
 
   TextEditingController _textFieldController = TextEditingController();
@@ -261,11 +263,17 @@ class _WorkoutPageState extends State<WorkoutPage> {
           color: Colors.green,
           textColor: Colors.white,
           child: Text('Ok'),
-          onPressed: () {
+          onPressed: () async {
             final workout = generateGpxString(workout_name, workout_type,
                 workout_start, new DateTime.now(), positions);
-            print(workout);
-            addWorkout(access_token, workout);
+            //print(workout);
+
+            bool isSuccess = await apiManager.addWorkout(access_token, workout);
+            // TODO - dodać obsługę odpowiedzi po żadaniu do addWorkout
+            if (isSuccess)
+              print("Success");
+            else
+              print("Failure");
 
             setState(() {
               isFinished = false;
@@ -279,7 +287,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
     /* }); */
   }
 
-  Future<AddWorkoutResponseModel> addWorkout(
+  /* Future<AddWorkoutResponseModel> addWorkout(
       String access_token, String workout) async {
     AddWorkoutRequestModel arm = new AddWorkoutRequestModel(workout: workout);
     final response = await http.post(URL + "/addWorkout",
@@ -294,5 +302,5 @@ class _WorkoutPageState extends State<WorkoutPage> {
     } else {
       throw Exception('Podczas wczytywania odpowiedzi wystapił błąd!');
     }
-  }
+  } */
 }
