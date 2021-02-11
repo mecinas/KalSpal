@@ -1,15 +1,13 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kalspal/managers/api_manager.dart';
-import 'package:kalspal/models/screen_arguments.dart';
-import 'package:location/location.dart';
 import 'package:gpx/gpx.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:kalspal/managers/api_manager.dart';
+import 'package:kalspal/managers/gpx_manager.dart';
+import 'package:kalspal/models/screen_arguments.dart';
+import 'package:kalspal/models/workout.dart';
+import 'package:location/location.dart';
 
-import '../models/add_workout_model.dart';
 import 'package:kalspal/widgets/circle_button.dart';
 import 'package:kalspal/widgets/buttons_section.dart';
 
@@ -21,22 +19,20 @@ class WorkoutPage extends StatefulWidget {
 class _WorkoutPageState extends State<WorkoutPage> {
   Location location = Location();
   List<Wpt> positions = [];
-  ApiManager apiManager = new ApiManager();
   bool isInitialized = true, isRunning = false, isFinished = false;
 
   TextEditingController _textFieldController = TextEditingController();
-  String /* codeDialog, */ workout_name;
+  String workoutName;
   DateTime workout_start;
 
-  final DELAY_IN_SECONDS = 5;
-  final URL = "https://...";
+  static const DELAY_IN_SECONDS = 5;
 
   @override
   Widget build(BuildContext context) {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
-    String access_token = args.access_token;
+    String accessToken = args.access_token;
     String workout_type = args.workout_type;
-    /* print(access_token);
+    /* print(accessToken);
     print(workout_type); */
 
     return Scaffold(
@@ -65,7 +61,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 20.0, 0, 0),
                     child: ((isFinished)
-                        ? (_displayTextInputDialog(access_token, workout_type))
+                        ? (_displayTextInputDialog(accessToken, workout_type))
                         : (getSuitableButtonsSection())),
                   )
           ],
@@ -164,7 +160,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
 /*   void onPressedAcceptButton() {
     // TODO - Prześlij workout do api
     /* final workout = generateGpxString(
-        workout_name, workout_type, workout_start, Datetime.now(), positions); */
+        workoutName, workout_type, workout_start, Datetime.now(), positions); */
 
     setState(() {
       isFinished = false;
@@ -216,20 +212,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
     }
   }
 
-  String generateGpxString(
-      workout_name, workout_type, workout_start, workout_end, positions) {
-    final gpx = Gpx();
-    gpx.version = '1.1';
-    gpx.creator = 'dart-gpx library';
-    gpx.metadata = Metadata();
-    gpx.metadata.name = workout_name;
-    gpx.metadata.keywords = '${workout_type}, ${workout_start}, ${workout_end}';
-    gpx.wpts = positions;
-
-    return GpxWriter().asString(gpx, pretty: true);
-  }
-
-  Widget _displayTextInputDialog(access_token, workout_type) {
+  Widget _displayTextInputDialog(accessToken, workout_type) {
     /* return showDialog(
         /* context: context, */
         builder: (context) { */
@@ -238,11 +221,10 @@ class _WorkoutPageState extends State<WorkoutPage> {
       content: TextField(
         onChanged: (value) {
           setState(() {
-            workout_name = value;
+            workoutName = value;
           });
         },
         controller: _textFieldController,
-        /* initialValue: "Trening", */
         decoration: InputDecoration(hintText: "Nazwa treningu"),
       ),
       actions: <Widget>[
@@ -251,7 +233,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
           textColor: Colors.white,
           child: Text('Nie'),
           onPressed: () {
-            print("NIE !!!!" + workout_name);
             setState(() {
               isFinished = false;
               isInitialized = true;
@@ -264,11 +245,19 @@ class _WorkoutPageState extends State<WorkoutPage> {
           textColor: Colors.white,
           child: Text('Ok'),
           onPressed: () async {
-            final workout = generateGpxString(workout_name, workout_type,
-                workout_start, new DateTime.now(), positions);
-            //print(workout);
+            Workout workout = new Workout(
+                name: workoutName,
+                type: workout_type,
+                start: workout_start,
+                end: new DateTime.now(),
+                positions: positions);
+            GpxManager gpxManager = new GpxManager();
+            Gpx workoutGpx = gpxManager.getGpxFromWorkout(workout);
+            String sWorkout = gpxManager.getGpxString(workoutGpx);
+            print(sWorkout);
 
-            bool isSuccess = await apiManager.addWorkout(access_token, workout);
+            ApiManager apiManager = new ApiManager();
+            bool isSuccess = await apiManager.addWorkout(accessToken, sWorkout);
             // TODO - dodać obsługę odpowiedzi po żadaniu do addWorkout
             if (isSuccess)
               print("Success");
@@ -284,23 +273,5 @@ class _WorkoutPageState extends State<WorkoutPage> {
         ),
       ],
     );
-    /* }); */
   }
-
-  /* Future<AddWorkoutResponseModel> addWorkout(
-      String access_token, String workout) async {
-    AddWorkoutRequestModel arm = new AddWorkoutRequestModel(workout: workout);
-    final response = await http.post(URL + "/addWorkout",
-        headers: {HttpHeaders.authorizationHeader: access_token},
-        body: arm.toJson());
-
-    // TODO - dodać obsługę statusu odpowiedzi z naszego API
-    if (response.statusCode == 201) {
-      return AddWorkoutResponseModel.fromJson(
-        json.decode(response.body),
-      );
-    } else {
-      throw Exception('Podczas wczytywania odpowiedzi wystapił błąd!');
-    }
-  } */
 }
