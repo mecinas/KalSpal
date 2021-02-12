@@ -1,5 +1,5 @@
 class ScreenArguments {
-  final String workoutType, accessToken;
+  final String accessToken, workoutType;
 
-  ScreenArguments(this.workoutType, this.accessToken);
+  ScreenArguments({this.accessToken, this.workoutType});
 }

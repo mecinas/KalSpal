@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 
 class CircleButton extends StatelessWidget {
   final IconData icon;
-  final Color iconColor, buttonColor;
+  final Color iconColor, backgroundColor;
+  final double iconSize, padding, elevation;
   final Function onPressed;
-  final double iconSize, paddingSize;
 
   CircleButton({
     Key key,
     this.icon,
     this.iconColor,
-    this.buttonColor,
+    this.backgroundColor,
     this.onPressed,
     this.iconSize = 60.0,
-    this.paddingSize = 15.0,
+    this.padding = 15.0,
+    this.elevation = 4.0,
   }) : super(key: key);
 
   @override
@@ -24,9 +25,9 @@ class CircleButton extends StatelessWidget {
         size: iconSize,
         color: iconColor,
       ),
-      fillColor: buttonColor,
-      elevation: 2.0,
-      padding: EdgeInsets.all(paddingSize),
+      fillColor: backgroundColor,
+      padding: EdgeInsets.all(padding),
+      elevation: elevation,
       shape: CircleBorder(),
       onPressed: onPressed,
     );

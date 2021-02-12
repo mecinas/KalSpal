@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'circle_button.dart';
 
-class ButtonsSection extends StatelessWidget {
+class DoubleButtonsSection extends StatelessWidget {
   final IconData icon, icon1;
   final Color iconColor, iconColor1;
-  final Color buttonColor, buttonColor1;
+  final Color backgroundColor, backgroundColor1;
   final Function onPressed, onPressed1;
 
-  ButtonsSection({
+  DoubleButtonsSection({
     Key key,
     this.icon,
     this.icon1,
     this.iconColor,
     this.iconColor1,
-    this.buttonColor,
-    this.buttonColor1,
+    this.backgroundColor,
+    this.backgroundColor1,
     this.onPressed,
     this.onPressed1,
   }) : super(key: key);
@@ -29,13 +29,13 @@ class ButtonsSection extends StatelessWidget {
           CircleButton(
             icon: icon,
             iconColor: iconColor,
-            buttonColor: buttonColor,
+            backgroundColor: backgroundColor,
             onPressed: onPressed,
           ),
           CircleButton(
             icon: icon1,
             iconColor: iconColor1,
-            buttonColor: buttonColor1,
+            backgroundColor: backgroundColor1,
             onPressed: onPressed1,
           ),
         ],

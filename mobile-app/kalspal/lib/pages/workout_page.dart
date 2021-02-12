@@ -9,7 +9,7 @@ import 'package:kalspal/models/workout.dart';
 import 'package:location/location.dart';
 
 import 'package:kalspal/widgets/circle_button.dart';
-import 'package:kalspal/widgets/buttons_section.dart';
+import 'package:kalspal/widgets/double_buttons_section.dart';
 
 class WorkoutPage extends StatefulWidget {
   @override
@@ -20,11 +20,10 @@ class _WorkoutPageState extends State<WorkoutPage> {
   Location location = Location();
   List<Wpt> positions = [];
   bool isInitialized = true, isRunning = false, isFinished = false;
-
-  TextEditingController _textFieldController = TextEditingController();
   String workoutName;
   DateTime workoutStart;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController textFieldController = TextEditingController();
 
   static const DELAY_IN_SECONDS = 5;
 
@@ -63,7 +62,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 ? (CircleButton(
                     icon: Icons.play_arrow_outlined,
                     iconColor: Theme.of(context).primaryColor,
-                    buttonColor: Theme.of(context).buttonColor,
+                    backgroundColor: Theme.of(context).backgroundColor,
                     onPressed: () {
                       onPressedStartButton();
                       workoutStart = new DateTime.now();
@@ -81,44 +80,72 @@ class _WorkoutPageState extends State<WorkoutPage> {
     );
   }
 
-  //    GUI
+  //    USER LOCATION
+  Future<bool> getLocationPermission() async {
+    PermissionStatus permission = await location.hasPermission();
+    if (permission == PermissionStatus.denied) {
+      permission = await location.requestPermission();
+      if (permission != PermissionStatus.granted)
+        return false;
+      else
+        return true;
+    } else
+      return true;
+  }
+
+  void recordPositions() async {
+    while (isRunning) {
+      saveCurrentPosition();
+      await Future.delayed(Duration(seconds: DELAY_IN_SECONDS));
+    }
+  }
+
+  void saveCurrentPosition() async {
+    try {
+      LocationData locationData = await location.getLocation();
+      DateTime now = new DateTime.now();
+      GpxManager gpxManager = new GpxManager();
+      Wpt position = gpxManager.convertLocationToWpt(locationData, now);
+      positions.add(position);
+    } catch (e) {
+      debugPrint(e);
+    }
+  }
+
+  //                GUI
   String getSuitableText() {
     if (isInitialized) return "Rozpocznij trening";
-
     if (isFinished) return "";
-
-    if (isRunning)
-      return "Nagrywanie treningu jest włączone.";
-    else
-      return "Nagrywanie treningu jest wyłączone.";
+    if (isRunning) return "Nagrywanie treningu jest włączone.";
+    return "Nagrywanie treningu jest wyłączone.";
   }
 
   Widget getSuitableButtonsSection() {
     Color iconColor = Theme.of(context).primaryColor;
-    Color buttonColor = Theme.of(context).accentColor;
+    Color backgroundColor = Theme.of(context).accentColor;
 
     if (isRunning)
-      return ButtonsSection(
+      return DoubleButtonsSection(
         icon: Icons.pause_rounded,
         iconColor: iconColor,
-        buttonColor: buttonColor,
+        backgroundColor: backgroundColor,
         onPressed: onPressedPauseButton,
         icon1: Icons.stop_rounded,
         iconColor1: iconColor,
-        buttonColor1: buttonColor,
+        backgroundColor1: backgroundColor,
         onPressed1: onPressedStopButton,
       );
-    else
-      return ButtonsSection(
-        icon: Icons.play_arrow_rounded,
-        iconColor: iconColor,
-        buttonColor: buttonColor,
-        onPressed: onPressedStartButton,
-        icon1: Icons.stop_rounded,
-        iconColor1: iconColor,
-        buttonColor1: buttonColor,
-        onPressed1: onPressedStopButton,
-      );
+
+    return DoubleButtonsSection(
+      icon: Icons.play_arrow_rounded,
+      iconColor: iconColor,
+      backgroundColor: backgroundColor,
+      onPressed: onPressedStartButton,
+      icon1: Icons.stop_rounded,
+      iconColor1: iconColor,
+      backgroundColor1: backgroundColor,
+      onPressed1: onPressedStopButton,
+    );
   }
 
   void onPressedStartButton() async {
@@ -157,51 +184,20 @@ class _WorkoutPageState extends State<WorkoutPage> {
     });
   }
 
-  //    USER LOCATION
-  Future<bool> getLocationPermission() async {
-    PermissionStatus permission = await location.hasPermission();
-    if (permission == PermissionStatus.denied) {
-      permission = await location.requestPermission();
-      if (permission != PermissionStatus.granted)
-        return false;
-      else
-        return true;
-    } else
-      return true;
-  }
-
-  void recordPositions() async {
-    while (isRunning) {
-      saveCurrentPosition();
-      await Future.delayed(Duration(seconds: DELAY_IN_SECONDS));
-    }
-  }
-
-  void saveCurrentPosition() async {
-    try {
-      LocationData locationData = await location.getLocation();
-      DateTime now = new DateTime.now();
-      GpxManager gpxManager = new GpxManager();
-      Wpt position = gpxManager.convertLocationToWpt(locationData, now);
-      positions.add(position);
-    } catch (e) {
-      debugPrint(e);
-    }
-  }
-
   Widget showAddWorkoutDialog(accessToken, workoutType) {
+    if (textFieldController.text.isEmpty)
+      textFieldController.text = getSuitableWorkoutName(DateTime.now());
+
     return AlertDialog(
       title: Text('Czy chcesz udostępnić swój trening?'),
       content: TextField(
         textAlign: TextAlign.center,
-        onChanged: (v) {
-          String value = v;
-          if (value.isEmpty) value = getSuitableWorkoutName(DateTime.now());
+        onChanged: (value) {
           setState(() {
             workoutName = value;
           });
         },
-        controller: _textFieldController,
+        controller: textFieldController,
         decoration: InputDecoration(hintText: "Nazwa treningu"),
       ),
       actions: <Widget>[
@@ -238,7 +234,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
             ApiManager apiManager = new ApiManager();
             bool isSuccess = await apiManager.addWorkout(accessToken, sWorkout);
             if (isSuccess)
-              showSnackBar("Twój trening został dodany", 6);
+              showSnackBar("Twój trening został pomyślnie udostepniony", 7);
             else
               showSnackBar("Podczas dodawania treningu wystąpił błąd!", 10);
 

@@ -38,11 +38,6 @@ class MyApp extends StatelessWidget {
             color: SECONDARY_COLOR,
           ),
         ),
-        /* fontFamily: 'Poppins', */
-        /* floatingActionButtonTheme: FloatingActionButtonThemeData(
-          elevation: 0,
-          foregroundColor: PRIMARY_COLOR,
-        ), */
       ),
       debugShowCheckedModeBanner: false,
     );

@@ -20,9 +20,7 @@ class Login extends StatelessWidget {
         const SizedBox(height: 150),
         FlatButton(
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 70),
-          onPressed: () async {
-            await loginAction();
-          },
+          onPressed: () => loginAction(),
           child: Text(
             "Zaloguj się",
             style:

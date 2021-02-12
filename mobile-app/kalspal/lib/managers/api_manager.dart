@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 
 class ApiManager {
   final String API_URL = DotEnv.env['API_URL'];
-  static const Map<String, String> ENDPOINTS = {
-    'CHECK_USER': '/api/user/check/registration',
-    'ADD_WORKOUT': '/api/workout/'
+  final Map<String, String> ENDPOINTS = {
+    'CHECK_USER': DotEnv.env['CHECK_IF_USER_IS_REGISTERED_ENDPOINT'],
+    'ADD_WORKOUT': DotEnv.env['ADD_WORKOUT_ENDPOINT']
   };
 
   Future<bool> checkIfUserExistsInDb(String accessToken) async {
@@ -15,6 +15,7 @@ class ApiManager {
     var headers = <String, String>{'Authorization': 'Bearer $accessToken'};
 
     final response = await http.get(url, headers: headers);
+    print("Response Status : " + response.statusCode.toString());
     if (response.statusCode == 200) return true;
     return false;
   }
@@ -23,17 +24,12 @@ class ApiManager {
     String url = API_URL + ENDPOINTS['ADD_WORKOUT'];
     var headers = <String, String>{
       'Authorization': 'Bearer $accessToken',
-      'Content-Type': 'application/json; charset=UTF-8'
+      'Content-Type': 'application/json'
     };
-    var body = jsonEncode(<String, String>{
-      'workout': "$workout",
-    });
-    print("Body = " + body.toString());
+    var body = jsonEncode(<String, String>{'workout': "$workout"});
 
     final response = await http.post(url, headers: headers, body: body);
-    if (response.statusCode == 201)
-      return true;
-    else
-      return false;
+    if (response.statusCode == 201) return true;
+    return false;
   }
 }

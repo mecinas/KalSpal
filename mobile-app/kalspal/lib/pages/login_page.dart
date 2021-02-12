@@ -31,7 +31,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool isBusy = false, isLoggedIn = false;
   String accessToken, errorMessage, name, picture;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -42,14 +41,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      /* appBar: AppBar(
-          title: const Text('Auth0 Demo'),
-        ), */
       backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: isBusy
-            ? const CircularProgressIndicator() /* Center(child: CircularProgressIndicator()) */
+            ? const CircularProgressIndicator()
             : isLoggedIn
                 ? Profile(logoutAction, startWorkout, name, picture)
                 : Login(loginAction, errorMessage),
@@ -87,8 +82,7 @@ class _LoginPageState extends State<LoginPage> {
         name = idToken['name'];
         picture = profile['picture'];
       });
-    } on Exception catch (e, s) {
-      debugPrint('error on refresh token: $e - stack: $s');
+    } on Exception {
       await logoutAction();
     }
   }
@@ -102,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<Map<String, Object>> getUserDetails(String accessToken) async {
-    final String url = 'https://$AUTH0_DOMAIN/userinfo';
+    final String url = AUTH0_ISSUER + '/userinfo';
     final http.Response response = await http.get(
       url,
       headers: <String, String>{'Authorization': 'Bearer $accessToken'},
@@ -126,9 +120,8 @@ class _LoginPageState extends State<LoginPage> {
         AuthorizationTokenRequest(
           AUTH0_CLIENT_ID,
           AUTH0_REDIRECT_URI,
-          issuer: 'https://$AUTH0_DOMAIN',
+          issuer: AUTH0_ISSUER,
           scopes: <String>['openid', 'profile', 'offline_access'],
-          // promptValues: ['login']
         ),
       );
 
@@ -137,7 +130,6 @@ class _LoginPageState extends State<LoginPage> {
         accessToken = result.accessToken;
       });
 
-      //print(accessToken);
       ApiManager apiManager = new ApiManager();
       bool isRegistered = await apiManager.checkIfUserExistsInDb(accessToken);
       if (!isRegistered) {
@@ -185,8 +177,9 @@ class _LoginPageState extends State<LoginPage> {
       context,
       MaterialPageRoute(
         builder: (context) => WorkoutPage(),
-        settings:
-            RouteSettings(arguments: ScreenArguments(workoutType, accessToken)),
+        settings: RouteSettings(
+            arguments: ScreenArguments(
+                accessToken: accessToken, workoutType: workoutType)),
       ),
     );
   }

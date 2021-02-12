@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'circle_button.dart';
 
 class Profile extends StatelessWidget {
-  final Future<void> Function() logoutAction /* , startWorkout */;
+  final Future<void> Function() logoutAction;
   final void Function(String) startWorkout;
   final String name;
   final String picture;
@@ -34,30 +34,40 @@ class Profile extends StatelessWidget {
           '$name',
           style: TextStyle(color: Theme.of(context).accentColor),
         ),
-        const SizedBox(height: 60),
+        const SizedBox(height: 100),
+        Text(
+          'Rozpocznij Trening',
+          style: TextStyle(fontSize: 28, color: Theme.of(context).accentColor),
+        ),
+        const SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             CircleButton(
               icon: Icons.directions_run_rounded,
               iconColor: Theme.of(context).primaryColor,
-              buttonColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).accentColor,
               onPressed: () => startWorkout("run"),
             ),
             CircleButton(
               icon: Icons.directions_bike_rounded,
               iconColor: Theme.of(context).primaryColor,
-              buttonColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).accentColor,
               onPressed: () => startWorkout("cycling"),
             ),
           ],
         ),
-        const SizedBox(height: 24),
-        RaisedButton(
-          onPressed: () async {
-            await logoutAction();
-          },
-          child: const Text('Wyloguj się'),
+        const SizedBox(height: 80),
+        FlatButton(
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 70),
+          onPressed: () => logoutAction(),
+          child: Text(
+            "Wyloguj się",
+            style:
+                TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
+          ),
+          color: Theme.of(context).accentColor,
+          shape: StadiumBorder(),
         ),
       ],
     );
