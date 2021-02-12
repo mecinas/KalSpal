@@ -23,19 +23,19 @@ class _WorkoutPageState extends State<WorkoutPage> {
 
   TextEditingController _textFieldController = TextEditingController();
   String workoutName;
-  DateTime workout_start;
+  DateTime workoutStart;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   static const DELAY_IN_SECONDS = 5;
 
   @override
   Widget build(BuildContext context) {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
-    String accessToken = args.access_token;
-    String workout_type = args.workout_type;
-    /* print(accessToken);
-    print(workout_type); */
+    String accessToken = args.accessToken;
+    String workoutType = args.workoutType;
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: Column(
@@ -55,13 +55,13 @@ class _WorkoutPageState extends State<WorkoutPage> {
                     buttonColor: Theme.of(context).buttonColor,
                     onPressed: () {
                       onPressedStartButton();
-                      workout_start = new DateTime.now();
+                      workoutStart = new DateTime.now();
                     },
                   ))
                 : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 20.0, 0, 0),
                     child: ((isFinished)
-                        ? (_displayTextInputDialog(accessToken, workout_type))
+                        ? (_displayTextInputDialog(accessToken, workoutType))
                         : (getSuitableButtonsSection())),
                   )
           ],
@@ -157,26 +157,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
     });
   }
 
-/*   void onPressedAcceptButton() {
-    // TODO - Prześlij workout do api
-    /* final workout = generateGpxString(
-        workoutName, workout_type, workout_start, Datetime.now(), positions); */
-
-    setState(() {
-      isFinished = false;
-      isInitialized = true;
-      positions = [];
-    });
-  } */
-
-/*   void onPressedCancelButton() {
-    setState(() {
-      isFinished = false;
-      isInitialized = true;
-      positions = [];
-    });
-  } */
-
   //    USER LOCATION
   Future<bool> getLocationPermission() async {
     PermissionStatus permission = await location.hasPermission();
@@ -199,20 +179,17 @@ class _WorkoutPageState extends State<WorkoutPage> {
 
   void saveCurrentPosition() async {
     try {
-      LocationData ld = await location.getLocation();
-      Wpt position = Wpt(
-          lat: ld.latitude,
-          lon: ld.longitude,
-          ele: ld.altitude,
-          time: new DateTime.now());
-
+      LocationData locationData = await location.getLocation();
+      DateTime now = new DateTime.now();
+      GpxManager gpxManager = new GpxManager();
+      Wpt position = gpxManager.convertLocationToWpt(locationData, now);
       positions.add(position);
     } catch (e) {
       print(e);
     }
   }
 
-  Widget _displayTextInputDialog(accessToken, workout_type) {
+  Widget _displayTextInputDialog(accessToken, workoutType) {
     /* return showDialog(
         /* context: context, */
         builder: (context) { */
@@ -228,17 +205,20 @@ class _WorkoutPageState extends State<WorkoutPage> {
         decoration: InputDecoration(hintText: "Nazwa treningu"),
       ),
       actions: <Widget>[
-        FlatButton(
-          color: Colors.red,
-          textColor: Colors.white,
-          child: Text('Nie'),
-          onPressed: () {
-            setState(() {
-              isFinished = false;
-              isInitialized = true;
-              positions = [];
-            });
-          },
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 40, 0),
+          child: FlatButton(
+            color: Colors.red,
+            textColor: Colors.white,
+            child: Text('Nie'),
+            onPressed: () {
+              setState(() {
+                isFinished = false;
+                isInitialized = true;
+                positions = [];
+              });
+            },
+          ),
         ),
         FlatButton(
           color: Colors.green,
@@ -247,8 +227,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
           onPressed: () async {
             Workout workout = new Workout(
                 name: workoutName,
-                type: workout_type,
-                start: workout_start,
+                type: workoutType,
+                start: workoutStart,
                 end: new DateTime.now(),
                 positions: positions);
             GpxManager gpxManager = new GpxManager();
@@ -258,11 +238,10 @@ class _WorkoutPageState extends State<WorkoutPage> {
 
             ApiManager apiManager = new ApiManager();
             bool isSuccess = await apiManager.addWorkout(accessToken, sWorkout);
-            // TODO - dodać obsługę odpowiedzi po żadaniu do addWorkout
             if (isSuccess)
-              print("Success");
+              showSnackBar("Twój trening został dodany", 6);
             else
-              print("Failure");
+              showSnackBar("Podczas dodawania treningu wystąpił błąd!", 10);
 
             setState(() {
               isFinished = false;
@@ -273,5 +252,18 @@ class _WorkoutPageState extends State<WorkoutPage> {
         ),
       ],
     );
+  }
+
+  void showSnackBar(String message, int duration) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Colors.black,
+      content:
+          Text(message, style: TextStyle(fontSize: 18, color: Colors.white)),
+      action: SnackBarAction(
+        label: 'Ok',
+        onPressed: () {},
+      ),
+      duration: Duration(seconds: duration),
+    ));
   }
 }
