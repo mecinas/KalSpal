@@ -2,7 +2,6 @@ package com.pw.kalspal.controller;
 
 import com.pw.kalspal.entity.Avatar;
 import com.pw.kalspal.entity.User;
-import com.pw.kalspal.entity.Workout;
 import com.pw.kalspal.payload.response.MessageResponse;
 import com.pw.kalspal.payload.response.ResponseFile;
 import com.pw.kalspal.repository.AvatarRepository;
@@ -38,14 +37,15 @@ public class AvatarController {
         String userId = authentication.getName();
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
-        if(user.getAvatar() != null){
+        if (user.getAvatar() != null) {
             Avatar avatar = user.getAvatar();
             user.setAvatar(null);
             user.setAvatarURL(null);
             userRepository.save(user);
             avatarRepository.delete(avatar);
         }
-        try {
+        try
+        {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             Avatar avatar = new Avatar(fileName, file.getContentType(), file.getBytes());
             String fileDownloadUri = ServletUriComponentsBuilder
@@ -59,7 +59,8 @@ public class AvatarController {
             userRepository.save(user);
 
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             String message = "Could not upload the file: " + e.toString();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse((message)));
         }
@@ -93,7 +94,7 @@ public class AvatarController {
     }
 
     @DeleteMapping("/")
-    public ResponseEntity<?> deleteAvatar(Authentication authentication){
+    public ResponseEntity<?> deleteAvatar(Authentication authentication) {
         String userId = authentication.getName();
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));

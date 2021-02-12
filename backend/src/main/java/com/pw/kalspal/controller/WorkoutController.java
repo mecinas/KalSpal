@@ -24,7 +24,7 @@ public class WorkoutController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createNewWorkout(@RequestBody CreateWorkoutRequest request, Authentication authentication){
+    public ResponseEntity<?> createNewWorkout(@RequestBody CreateWorkoutRequest request, Authentication authentication) {
         String userId = authentication.getName();
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
@@ -34,7 +34,7 @@ public class WorkoutController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> getAuthenticatedUserWorkouts(Authentication authentication){
+    public ResponseEntity<?> getAuthenticatedUserWorkouts(Authentication authentication) {
         String userId = authentication.getName();
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
@@ -42,13 +42,13 @@ public class WorkoutController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteWorkout(Authentication authentication, @PathVariable("id") String id){
+    public ResponseEntity<?> deleteWorkout(Authentication authentication, @PathVariable("id") String id) {
         String userId = authentication.getName();
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
         Workout workout = workoutRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Workout not found"));
-        if(!workout.getUser().equals(user)){
+        if (!workout.getUser().equals(user)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given workout does not belong to authenticated user");
         }
         workoutRepository.deleteById(id);

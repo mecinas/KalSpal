@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Workout {
 
     @Id
-    private String id = UUID.randomUUID().toString();
+    private final String id = UUID.randomUUID().toString();
 
     @NotNull
     @ManyToOne
@@ -19,7 +19,7 @@ public class Workout {
     private User user;
 
     @NotNull
-    @Column(columnDefinition="VARCHAR(MAX)")
+    @Column(columnDefinition = "VARCHAR(MAX)")
     private String gpx;
 
     public Workout(@NotNull User user, @NotNull String gpx) {

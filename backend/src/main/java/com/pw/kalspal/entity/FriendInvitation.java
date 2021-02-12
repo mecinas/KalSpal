@@ -1,13 +1,15 @@
 package com.pw.kalspal.entity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 @Entity
 public class FriendInvitation {
 
     @Id
-    private String id = UUID.randomUUID().toString();
+    private final String id = UUID.randomUUID().toString();
 
     @ManyToOne
     private User invitationAuthor;

@@ -1,16 +1,13 @@
 package com.pw.kalspal.entity;
 
 import javax.persistence.*;
-
-import org.hibernate.annotations.GenericGenerator;
-
 import java.util.UUID;
 
 @Entity
 public class Avatar {
 
     @Id
-    private String id = UUID.randomUUID().toString();
+    private final String id = UUID.randomUUID().toString();
 
     private String name;
 

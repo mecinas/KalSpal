@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "appusers")
@@ -35,7 +37,7 @@ public class User implements Serializable {
     private List<Workout> workouts = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY,
-            cascade =  CascadeType.ALL,
+            cascade = CascadeType.ALL,
             mappedBy = "user")
     @JsonIgnore
     private Avatar avatar;
@@ -54,8 +56,8 @@ public class User implements Serializable {
     @ManyToMany(cascade = CascadeType.ALL)
     @JsonIgnoreProperties("friends")
     @JoinTable(name = "appusers_friends",
-            joinColumns = @JoinColumn(name = "user_id",  referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "friends_id",  referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "friends_id", referencedColumnName = "id"))
     private Set<User> friends;
 
     public User(@NotNull String id, @NotNull String firstName, @NotNull String lastName, @NotNull String email, @NotNull Date birthDate) {
@@ -70,12 +72,12 @@ public class User implements Serializable {
 
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstName() {

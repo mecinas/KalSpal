@@ -19,7 +19,7 @@ public class FriendController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> getAllFriends(Authentication authentication){
+    public ResponseEntity<?> getAllFriends(Authentication authentication) {
         String userId = authentication.getName();
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
@@ -27,7 +27,7 @@ public class FriendController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFriend(@PathVariable String id, Authentication authentication){
+    public ResponseEntity<?> deleteFriend(@PathVariable String id, Authentication authentication) {
         String userId = authentication.getName();
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
