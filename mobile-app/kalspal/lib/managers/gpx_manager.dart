@@ -1,5 +1,6 @@
 import 'package:gpx/gpx.dart';
 import 'package:kalspal/models/workout.dart';
+import 'package:location/location.dart';
 
 class GpxManager {
   Gpx getGpxFromWorkout(Workout workout) {
@@ -15,6 +16,15 @@ class GpxManager {
   }
 
   String getGpxString(Gpx gpx) {
-    return GpxWriter().asString(gpx, pretty: true);
+    return GpxWriter().asString(gpx);
+  }
+
+  Wpt convertLocationToWpt(LocationData locationData, DateTime time) {
+    Wpt wpt = Wpt(
+        lat: locationData.latitude,
+        lon: locationData.longitude,
+        ele: locationData.altitude,
+        time: time);
+    return wpt;
   }
 }
