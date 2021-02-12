@@ -61,7 +61,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 20.0, 0, 0),
                     child: ((isFinished)
-                        ? (_displayTextInputDialog(accessToken, workoutType))
+                        ? (showAddWorkoutDialog(accessToken, workoutType))
                         : (getSuitableButtonsSection())),
                   )
           ],
@@ -189,14 +189,14 @@ class _WorkoutPageState extends State<WorkoutPage> {
     }
   }
 
-  Widget _displayTextInputDialog(accessToken, workoutType) {
-    /* return showDialog(
-        /* context: context, */
-        builder: (context) { */
+  Widget showAddWorkoutDialog(accessToken, workoutType) {
     return AlertDialog(
       title: Text('Czy chcesz udostępnić swój trening?'),
       content: TextField(
-        onChanged: (value) {
+        textAlign: TextAlign.center,
+        onChanged: (v) {
+          String value = v;
+          if (value.isEmpty) value = getSuitableWorkoutName(DateTime.now());
           setState(() {
             workoutName = value;
           });
@@ -252,6 +252,21 @@ class _WorkoutPageState extends State<WorkoutPage> {
         ),
       ],
     );
+  }
+
+  String getSuitableWorkoutName(DateTime now) {
+    if (6 < now.hour && now.hour < 7)
+      return "Trening o Brzasku";
+    else if (7 < now.hour && now.hour < 10)
+      return "Poranny Trening";
+    else if (10 < now.hour && now.hour < 12)
+      return "Trening";
+    else if (12 < now.hour && now.hour < 17)
+      return "Popołudniowy Trening";
+    else if (17 < now.hour && now.hour < 21)
+      return "Wieczorny Trening";
+    else
+      return "Nocny Trening";
   }
 
   void showSnackBar(String message, int duration) {
