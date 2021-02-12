@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+import 'package:kalspal/managers/api_manager.dart';
 import 'package:kalspal/models/screen_arguments.dart';
 import 'package:kalspal/pages/workout_page.dart';
 
@@ -29,8 +30,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isBusy = false, isLoggedIn = false;
-  String errorMessage, name, picture;
-  String access_token;
+  String accessToken, errorMessage, name, picture;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -41,13 +42,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       /* appBar: AppBar(
           title: const Text('Auth0 Demo'),
         ), */
       backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: isBusy
-            ? const CircularProgressIndicator()
+            ? const CircularProgressIndicator() /* Center(child: CircularProgressIndicator()) */
             : isLoggedIn
                 ? Profile(logoutAction, startWorkout, name, picture)
                 : Login(loginAction, errorMessage),
@@ -132,27 +134,40 @@ class _LoginPageState extends State<LoginPage> {
 
       final Map<String, Object> idToken = parseIdToken(result.idToken);
       setState(() {
-        access_token = result.accessToken;
+        accessToken = result.accessToken;
       });
-      //print(access_token);
-      final Map<String, Object> profile = await getUserDetails(access_token);
 
+      print(accessToken);
+      ApiManager apiManager = new ApiManager();
+      bool isRegistered = await apiManager.checkIfUserExistsInDb(accessToken);
+      if (!isRegistered) {
+        setState(() {
+          isBusy = false;
+          isLoggedIn = false;
+          errorMessage =
+              "Aby korzystać z aplikacji musisz być zarejestrowany w naszym serwisie!";
+        });
+        return;
+      }
+
+      final Map<String, Object> profile = await getUserDetails(accessToken);
       await secureStorage.write(
           key: 'refresh_token', value: result.refreshToken);
-
       setState(() {
         isBusy = false;
         isLoggedIn = true;
         name = idToken['name'];
         picture = profile['picture'];
       });
-    } on Exception catch (e, s) {
-      debugPrint('login error: $e - stack: $s');
+    } on Exception catch (e) {
+      String errorMessage = e.toString();
+      if (errorMessage.contains('PlatformException'))
+        errorMessage = "Aby korzystać z aplikacji musisz się zalogować!";
 
       setState(() {
         isBusy = false;
         isLoggedIn = false;
-        errorMessage = e.toString();
+        errorMessage = errorMessage;
       });
     }
   }
@@ -165,13 +180,13 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void startWorkout(String workout_type) {
+  void startWorkout(String workoutType) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => WorkoutPage(),
-        settings: RouteSettings(
-            arguments: ScreenArguments(workout_type, access_token)),
+        settings:
+            RouteSettings(arguments: ScreenArguments(workoutType, accessToken)),
       ),
     );
   }
