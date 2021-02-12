@@ -9,21 +9,34 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
+        const SizedBox(height: 100),
+        Image.asset(
+          'assets/images/logo.png',
+          height: 150,
+          width: 150,
+        ),
+        const SizedBox(height: 150),
         FlatButton(
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 80),
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 70),
           onPressed: () async {
             await loginAction();
           },
           child: Text(
             "Zaloguj się",
-            style: TextStyle(color: Theme.of(context).primaryColor),
+            style:
+                TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
           ),
           color: Theme.of(context).accentColor,
           shape: StadiumBorder(),
         ),
-        Text(loginError ?? ''),
+        const SizedBox(height: 80),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Text(loginError ?? '',
+              style: TextStyle(fontSize: 22, color: Colors.red)),
+        ),
       ],
     );
   }
