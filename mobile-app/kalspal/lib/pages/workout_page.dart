@@ -35,6 +35,17 @@ class _WorkoutPageState extends State<WorkoutPage> {
     String workoutType = args.workoutType;
 
     return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor, //change your color here
+        ),
+        title: Text(
+          "Twój Trening",
+          style: TextStyle(color: Theme.of(context).primaryColor),
+        ),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).accentColor,
+      ),
       key: _scaffoldKey,
       backgroundColor: Theme.of(context).primaryColor,
       body: Center(
@@ -86,18 +97,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
     Color iconColor = Theme.of(context).primaryColor;
     Color buttonColor = Theme.of(context).accentColor;
 
-    /* if (isFinished) return _displayTextInputDialog(); */
-    /* return ButtonsSection(
-      icon: Icons.clear_rounded,
-      iconColor: Colors.white,
-      buttonColor: Colors.red,
-      onPressed: onPressedCancelButton,
-      icon1: Icons.done_outline_rounded,
-      iconColor1: Colors.white,
-      buttonColor1: Colors.green,
-      onPressed1: onPressedAcceptButton,
-    ); */
-
     if (isRunning)
       return ButtonsSection(
         icon: Icons.pause_rounded,
@@ -125,8 +124,9 @@ class _WorkoutPageState extends State<WorkoutPage> {
   void onPressedStartButton() async {
     bool isPermittedByUser = await getLocationPermission();
     if (!isPermittedByUser)
-      print(
-          "Aby aplikacja mogła działać poprawnie, musisz zezwolić jej na dostęp do twojej lokalizacji!");
+      showSnackBar(
+          "Aby aplikacja mogła działać poprawnie, musisz zezwolić jej na dostęp do twojej lokalizacji!",
+          10);
 
     if (isInitialized)
       setState(() {
@@ -185,7 +185,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
       Wpt position = gpxManager.convertLocationToWpt(locationData, now);
       positions.add(position);
     } catch (e) {
-      print(e);
+      debugPrint(e);
     }
   }
 
@@ -234,7 +234,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
             GpxManager gpxManager = new GpxManager();
             Gpx workoutGpx = gpxManager.getGpxFromWorkout(workout);
             String sWorkout = gpxManager.getGpxString(workoutGpx);
-            print(sWorkout);
 
             ApiManager apiManager = new ApiManager();
             bool isSuccess = await apiManager.addWorkout(accessToken, sWorkout);

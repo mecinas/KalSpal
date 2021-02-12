@@ -137,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
         accessToken = result.accessToken;
       });
 
-      print(accessToken);
+      //print(accessToken);
       ApiManager apiManager = new ApiManager();
       bool isRegistered = await apiManager.checkIfUserExistsInDb(accessToken);
       if (!isRegistered) {
