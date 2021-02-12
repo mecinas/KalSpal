@@ -2,6 +2,7 @@ package com.pw.kalspal.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -40,6 +41,22 @@ public class User implements Serializable {
     private Avatar avatar;
 
     private String avatarURL;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invitationAuthor")
+    private List<FriendInvitation> invitationsSent;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invited", orphanRemoval = true)
+    private List<FriendInvitation> invitationsReceived;
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("friends")
+    @JoinTable(name = "appusers_friends",
+            joinColumns = @JoinColumn(name = "user_id",  referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "friends_id",  referencedColumnName = "id"))
+    private Set<User> friends;
 
     public User(@NotNull String id, @NotNull String firstName, @NotNull String lastName, @NotNull String email, @NotNull Date birthDate) {
         this.id = id;
@@ -117,4 +134,27 @@ public class User implements Serializable {
         this.avatarURL = avatarURL;
     }
 
+    public List<FriendInvitation> getInvitationsSent() {
+        return invitationsSent;
+    }
+
+    public void setInvitationsSent(List<FriendInvitation> invitationsSent) {
+        this.invitationsSent = invitationsSent;
+    }
+
+    public List<FriendInvitation> getInvitationsReceived() {
+        return invitationsReceived;
+    }
+
+    public void setInvitationsReceived(List<FriendInvitation> invitationsReceived) {
+        this.invitationsReceived = invitationsReceived;
+    }
+
+    public Set<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<User> friends) {
+        this.friends = friends;
+    }
 }
