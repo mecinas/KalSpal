@@ -21,7 +21,7 @@ class Profile extends StatelessWidget {
           width: 150,
           height: 150,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.blue, width: 4),
+            border: Border.all(color: Theme.of(context).accentColor, width: 4),
             shape: BoxShape.circle,
             image: DecorationImage(
               fit: BoxFit.fill,
@@ -32,12 +32,12 @@ class Profile extends StatelessWidget {
         const SizedBox(height: 24),
         Text(
           '$name',
-          style: TextStyle(color: Theme.of(context).accentColor),
+          style: Theme.of(context).textTheme.headline3,
         ),
         const SizedBox(height: 100),
         Text(
           'Rozpocznij Trening',
-          style: TextStyle(fontSize: 28, color: Theme.of(context).accentColor),
+          style: Theme.of(context).textTheme.headline2,
         ),
         const SizedBox(height: 30),
         Row(
@@ -46,13 +46,13 @@ class Profile extends StatelessWidget {
             CircleButton(
               icon: Icons.directions_run_rounded,
               iconColor: Theme.of(context).primaryColor,
-              backgroundColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).buttonColor,
               onPressed: () => startWorkout("run"),
             ),
             CircleButton(
               icon: Icons.directions_bike_rounded,
               iconColor: Theme.of(context).primaryColor,
-              backgroundColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).buttonColor,
               onPressed: () => startWorkout("cycling"),
             ),
           ],

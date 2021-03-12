@@ -1,2 +1,3 @@
 # KalSpal
-App to manage your activities (WUT team project)
+App to manage your activities
+Readme of mobile app is in the mobile-app\kalspal 

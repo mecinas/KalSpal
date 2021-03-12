@@ -3,18 +3,12 @@ import 'circle_button.dart';
 
 class DoubleButtonsSection extends StatelessWidget {
   final IconData icon, icon1;
-  final Color iconColor, iconColor1;
-  final Color backgroundColor, backgroundColor1;
   final Function onPressed, onPressed1;
 
   DoubleButtonsSection({
     Key key,
     this.icon,
     this.icon1,
-    this.iconColor,
-    this.iconColor1,
-    this.backgroundColor,
-    this.backgroundColor1,
     this.onPressed,
     this.onPressed1,
   }) : super(key: key);
@@ -28,14 +22,14 @@ class DoubleButtonsSection extends StatelessWidget {
         children: <Widget>[
           CircleButton(
             icon: icon,
-            iconColor: iconColor,
-            backgroundColor: backgroundColor,
+            iconColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).buttonColor,
             onPressed: onPressed,
           ),
           CircleButton(
             icon: icon1,
-            iconColor: iconColor1,
-            backgroundColor: backgroundColor1,
+            iconColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).buttonColor,
             onPressed: onPressed1,
           ),
         ],

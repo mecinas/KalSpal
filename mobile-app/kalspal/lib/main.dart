@@ -5,7 +5,9 @@ import 'pages/login_page.dart';
 
 const APP_TITLE = "KalSpal";
 const PRIMARY_COLOR = Colors.white;
-const SECONDARY_COLOR = Colors.blue;
+const ACCENT_COLOR = Colors.green;
+const BUTTON_COLOR = Colors.greenAccent;
+
 Future main() async {
   await DotEnv.load();
   runApp(MyApp());
@@ -19,23 +21,23 @@ class MyApp extends StatelessWidget {
       home: LoginPage(),
       theme: ThemeData(
         primaryColor: PRIMARY_COLOR,
-        accentColor: SECONDARY_COLOR,
-        buttonColor: SECONDARY_COLOR,
+        accentColor: ACCENT_COLOR,
+        buttonColor: BUTTON_COLOR,
         textTheme: TextTheme(
-          headline1: TextStyle(fontSize: 22.0, color: SECONDARY_COLOR),
+          headline1: TextStyle(fontSize: 22.0, color: ACCENT_COLOR),
           headline2: TextStyle(
             fontSize: 24.0,
             fontWeight: FontWeight.w700,
-            color: SECONDARY_COLOR,
+            color: Colors.redAccent,
           ),
           headline3: TextStyle(
-            fontSize: 22.0,
-            color: SECONDARY_COLOR,
+            fontSize: 20.0,
+            color: ACCENT_COLOR,
           ),
           bodyText1: TextStyle(
             fontSize: 14.0,
             fontWeight: FontWeight.w400,
-            color: SECONDARY_COLOR,
+            color: ACCENT_COLOR,
           ),
         ),
       ),

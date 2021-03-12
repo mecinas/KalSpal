@@ -62,7 +62,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 ? (CircleButton(
                     icon: Icons.play_arrow_outlined,
                     iconColor: Theme.of(context).primaryColor,
-                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundColor: Theme.of(context).buttonColor,
                     onPressed: () {
                       onPressedStartButton();
                       workoutStart = new DateTime.now();
@@ -121,29 +121,18 @@ class _WorkoutPageState extends State<WorkoutPage> {
   }
 
   Widget getSuitableButtonsSection() {
-    Color iconColor = Theme.of(context).primaryColor;
-    Color backgroundColor = Theme.of(context).accentColor;
-
     if (isRunning)
       return DoubleButtonsSection(
         icon: Icons.pause_rounded,
-        iconColor: iconColor,
-        backgroundColor: backgroundColor,
         onPressed: onPressedPauseButton,
         icon1: Icons.stop_rounded,
-        iconColor1: iconColor,
-        backgroundColor1: backgroundColor,
         onPressed1: onPressedStopButton,
       );
 
     return DoubleButtonsSection(
       icon: Icons.play_arrow_rounded,
-      iconColor: iconColor,
-      backgroundColor: backgroundColor,
       onPressed: onPressedStartButton,
       icon1: Icons.stop_rounded,
-      iconColor1: iconColor,
-      backgroundColor1: backgroundColor,
       onPressed1: onPressedStopButton,
     );
   }
