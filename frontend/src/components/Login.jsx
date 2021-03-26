@@ -11,14 +11,14 @@ import Mail from "../resources/mail.png"
 export default function Login() {
     return (
             <Container className="login-container">
-                <Row className="justify-content-md-center">
+                <Row>
                     <Col lg={6} sm={12}>
                         <div>
                         <Image src={Logo} className="img-fluid running-img" />
                         </div>
                     </Col>
 
-                    <Col lg={6} sm={12} className="login-col">
+                    <Col lg={6} sm={12}>
                         <Row >
                             <Col className="login-col" sm={12}>
                                 <Button className="login-btn" variant="outline-secondary">
