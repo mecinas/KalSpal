@@ -1,0 +1,35 @@
+
+.login-container{
+    margin-top: 5%;
+}
+
+img.running-img {
+    margin-left: 10%;
+    width: 100%;
+}
+
+.login-col{
+    display: flex;
+    align-items: center;
+}
+
+.login-btn{
+    margin-left: 10%;
+    padding-left: 10%;
+    left: 30px;
+    width: 100%;
+    margin-bottom: 4%;
+    margin-right: 0;
+}
+
+h5.btn-text{
+    margin: 1%;
+}
+
+.login-ico {
+    position: absolute;
+    left: 14%;
+    margin-left: 0;
+    margin-right: 10px;
+    width: 30px;
+}
