@@ -18,12 +18,22 @@ img.running-img {
     padding-left: 10%;
     left: 30px;
     width: 100%;
+    margin-top: 4%;
+    margin-right: 0;
+}
+
+.login-statute{
+    margin-left: 0;
+    padding-left: 10%;
+    left: 30px;
+    width: 100%;
     margin-bottom: 4%;
     margin-right: 0;
 }
 
-h5.btn-text{
-    margin: 1%;
+h5.login-statute{
+    margin: 2%;
+    font-size: medium;
 }
 
 .login-ico {

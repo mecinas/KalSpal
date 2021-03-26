@@ -48,6 +48,9 @@ export default function Login() {
                                 </Button>
                             </Col>
 
+                            <Col className="login-col" sm={12}>
+                                <h5 className="login-statute">Logując się do KalSpal akceptujesz <a href="#">Regulamin</a></h5>
+                            </Col>
                         </Row>
                     </Col>
                 </Row>
