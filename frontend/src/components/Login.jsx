@@ -1,5 +1,6 @@
 import React from 'react'
-import { Container, Row, Col, Image, Button, Jumbotron } from 'react-bootstrap'
+import { Container, Row, Col, Image, Button } from 'react-bootstrap'
+import { useAuth0 } from '@auth0/auth0-react';
 
 import "../styles/Login.css"
 import Logo from "../resources/running.jpg"
@@ -9,6 +10,9 @@ import Github from "../resources/github.png"
 import Mail from "../resources/mail.png"
 
 export default function Login() {
+
+    const {loginWithRedirect} = useAuth0();
+    
     return (
             <Container className="login-container">
                 <Row>
@@ -21,28 +25,28 @@ export default function Login() {
                     <Col lg={6} sm={12}>
                         <Row >
                             <Col className="login-col" sm={12}>
-                                <Button className="login-btn" variant="outline-secondary">
+                                <Button className="login-btn" variant="outline-secondary" onClick={()=> loginWithRedirect()}>
                                     <Image src={Facebook} className="login-ico" />
                                     Zaloguj się za pomocą Facebook
                                 </Button>
                             </Col>
 
                             <Col className="login-col" sm={12}>
-                                <Button className="login-btn" variant="outline-secondary">
+                                <Button className="login-btn" variant="outline-secondary" onClick={()=> loginWithRedirect()}>
                                     <Image src={Google} className="login-ico" />
                                     Zaloguj się za pomocą Google
                                 </Button>
                             </Col>
 
                             <Col className="login-col" sm={12}>
-                                <Button className="login-btn" variant="outline-secondary">
+                                <Button className="login-btn" variant="outline-secondary" onClick={()=> loginWithRedirect()}>
                                     <Image src={Github} className="login-ico" />
                                     Zaloguj się za pomocą Github
                                 </Button>
                             </Col>
 
                             <Col className="login-col" sm={12}>
-                                <Button className="login-btn" variant="outline-secondary">
+                                <Button className="login-btn" variant="outline-secondary" onClick={()=> loginWithRedirect()}>
                                     <Image src={Mail} className="login-ico" />
                                     Zaloguj się za pomocą poczty
                                 </Button>
