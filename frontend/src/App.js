@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Home from './components/Home'
 import CreateUser from './components/CreateUser'
 import DefaultNavbar from './components/DefaultNavbar'
+import Footer from "./components/Footer"
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route exact path="/createUser" component={CreateUser}/>
         </Switch>
       </Router>
+      <Footer/>
     </div>
   );
 }

@@ -1,0 +1,26 @@
+.greeting-jumbo{
+    margin-top: 5%;
+    text-align: center;
+}
+
+.greeting-title{
+    margin-bottom: 2%;
+}
+
+.info-btn{
+    margin-left: 78px;
+}
+
+.checkbox-group{
+    display: flex;
+}
+
+.btn-group{
+    position: relative;
+    left: 43%;
+    margin: auto;
+}
+
+.submit-btn{
+    width: 100px;
+}

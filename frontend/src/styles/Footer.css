@@ -43,3 +43,11 @@
     padding-top: 10px;
     transform: skewY(1deg);
 }
+
+.footer-link{
+    color: wheat;
+}
+
+.footer-link:hover{
+    color: burlywood;
+}
