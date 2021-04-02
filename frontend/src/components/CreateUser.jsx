@@ -3,10 +3,19 @@ import { Form, Button, Jumbotron, Container } from 'react-bootstrap'
 
 import '../styles/CreateUser.css'
 
+import {comunication} from './Comunication'
+
 export default function CreateUser() {
 
+    const onFormSubmit = e => {
+        e.preventDefault()
+        const formData = new FormData(e.target),
+              formDataObj = Object.fromEntries(formData.entries())
+        comunication()
+      }
+
     return (
-        <Container>
+        <Container onSubmit={onFormSubmit}>
             <Jumbotron className="greeting-jumbo">
                 <h1 className="greeting-title">Witaj na naszej platformie!</h1>
                 <h5>
@@ -18,15 +27,15 @@ export default function CreateUser() {
 
             <Form>
                 <Form.Group controlId="formBasicName">
-                    <Form.Control type="text" placeholder="Wprowadź Imię" />
+                    <Form.Control type="text" name='name' placeholder="Wprowadź Imię" />
                 </Form.Group>
 
                 <Form.Group controlId="formBasicSurname">
-                    <Form.Control type="text" placeholder="Wprowadź nazwisko" />
+                    <Form.Control type="text" name='surname' placeholder="Wprowadź nazwisko" />
                 </Form.Group>
 
                 <Form.Group controlId="formBasicEmail">
-                    <Form.Control type="text" placeholder="Wprowadź email" />
+                    <Form.Control type="text" name='email' placeholder="Wprowadź email" />
                 </Form.Group>
 
                 <Form.Group controlId="formBasicDate">
@@ -44,6 +53,7 @@ export default function CreateUser() {
                         Prześlij
                     </Button>
                 </Form.Group>
+
             </Form>
 
         </Container>
