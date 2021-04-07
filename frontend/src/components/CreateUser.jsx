@@ -3,16 +3,14 @@ import { Form, Button, Jumbotron, Container } from 'react-bootstrap'
 
 import '../styles/CreateUser.css'
 
-import {comunication} from './Comunication'
-
 export default function CreateUser() {
 
     const onFormSubmit = e => {
         e.preventDefault()
         const formData = new FormData(e.target),
-              formDataObj = Object.fromEntries(formData.entries())
-        comunication()
-      }
+            formDataObj = Object.fromEntries(formData.entries())
+        console.log(formDataObj);
+    }
 
     return (
         <Container onSubmit={onFormSubmit}>
@@ -45,7 +43,7 @@ export default function CreateUser() {
 
                 <Form.Group className="checkbox-group" controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" />
-                    <Form.Label>Potwierdzam zapoznanie z <a href="#">Regulaminem</a></Form.Label>
+                    <Form.Label>Potwierdzam zapoznanie z <a href="/createUser">Regulaminem</a></Form.Label>
                 </Form.Group>
 
                 <Form.Group className="btn-group">

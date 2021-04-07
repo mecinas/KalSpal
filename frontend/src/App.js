@@ -4,6 +4,8 @@ import Home from './components/Home'
 import CreateUser from './components/CreateUser'
 import DefaultNavbar from './components/DefaultNavbar'
 import Footer from "./components/Footer"
+import Dashboard from "./components/Dashboard"
+import RedirectAfterLogin from "./components/RedirectAfterLogin"
 
 function App() {
   return (
@@ -12,7 +14,9 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/" component={Home}/>
-          <Route exact path="/createUser" component={CreateUser}/>
+          <Route path="/createUser" component={CreateUser}/>
+          <Route path="/dashboard" component={Dashboard}/>
+          <Route path="/redirectAfterLogin" component={RedirectAfterLogin}/>
         </Switch>
       </Router>
       <Footer/>

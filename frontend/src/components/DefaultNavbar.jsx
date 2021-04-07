@@ -14,7 +14,7 @@ export default function DefaultNavbar() {
                 </Navbar.Brand>
 
                 <Nav className="ml-auto">
-                    <Button variant="outline-success" font-size="xx-large" href="/">Dowiedz się więcej o nas</Button>
+                    <Button variant="outline-success" href="/">Dowiedz się więcej o nas</Button>
                 </Nav>
             </Navbar>
         </div>
