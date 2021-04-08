@@ -7,6 +7,11 @@ import Footer from "./components/Footer"
 import Dashboard from "./components/Dashboard"
 import RedirectAfterLogin from "./components/RedirectAfterLogin"
 
+//TODOS
+//Ogarnąć ściąganie danych z formularza
+//Stworzenie użytkownika na podstawie formularza
+//Dodanie opcji usunięcia konta
+
 function App() {
   return (
     <div className="App">

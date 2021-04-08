@@ -1,32 +1,58 @@
-import { useState } from 'react'
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
-function useCheckAvailAccount() {
-    const [response, setResponse] = useState(null);
-    const path = 'https://app-kalspal-dev.azurewebsites.net/api/user/check/registration'
+const path = 'https://app-kalspal-dev.azurewebsites.net'
+
+function useCheckAvailAccount(setIsRegistered) {
+    const endpoint = '/api/user/check/registration'
     const { getAccessTokenSilently } = useAuth0();
 
-    const makeRequest = async () => {
+    async function makeRequest(setIsRegistered) {
+        var isRegistered;
         const token = await getAccessTokenSilently({
             audience: 'https://kal-spal-dev.com'
         });
-        await axios.get(path, {
+        await axios.get(path + endpoint, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
         })
             .then(resp => {
-                const isRegistered = resp.data.message == "Not registered" ? false : true;
-                setResponse(isRegistered)
+                isRegistered = resp.data.message === "Not registered" ? false : true;
             })
             .catch(function (error) {
                 console.log(error.response);
             });
+        setIsRegistered(isRegistered)
     }
-    makeRequest();
-
-    return response;
+    makeRequest(setIsRegistered);
 }
 
-export {useCheckAvailAccount}
+function useRegisterAccount(registerData) {
+    const { getAccessTokenSilently } = useAuth0();
+
+
+    if (Object.keys(registerData).length !== 0) {
+        const endpoint = '/api/user/'
+        const makeRequest = async () => {
+            const token = await getAccessTokenSilently({
+                audience: 'https://kal-spal-dev.com'
+            });
+            var headers = {
+                withCredentials: true,
+                headers: { 'Authorization': 'Bearer ' + token }
+            }
+
+            await axios.post(path + endpoint, registerData, headers)
+                .then(resp => {
+                })
+                .catch(function (error) {
+                    console.log(error.message)
+                });
+        }
+        makeRequest();
+    }
+
+}
+
+export { useCheckAvailAccount, useRegisterAccount }
