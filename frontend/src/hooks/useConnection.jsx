@@ -6,7 +6,6 @@ const path = 'https://app-kalspal-dev.azurewebsites.net'
 function useCheckAvailAccount(setIsRegistered) {
     const endpoint = '/api/user/check/registration'
     const { getAccessTokenSilently } = useAuth0();
-
     async function makeRequest(setIsRegistered) {
         var isRegistered;
         const token = await getAccessTokenSilently({

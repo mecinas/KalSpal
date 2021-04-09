@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 
 import Home from './components/Home'
 import CreateUser from './components/CreateUser'
@@ -6,25 +7,44 @@ import DefaultNavbar from './components/DefaultNavbar'
 import Footer from "./components/Footer"
 import Dashboard from "./components/Dashboard"
 import RedirectAfterLogin from "./components/RedirectAfterLogin"
+import Account from "./components/Account"
 
 //TODOS
-//Ogarnąć ściąganie danych z formularza
-//Stworzenie użytkownika na podstawie formularza
-//Dodanie opcji usunięcia konta
+//Zarządzanie kontem
+//Konstrukcja budowy przechowywania info
+//Zarządzanie znajomymi
 
 function App() {
+  const [isLogged, setIsLogged] = useState(false);
+
+
   return (
     <div className="App">
-      <DefaultNavbar />
+      <DefaultNavbar isLogged={isLogged}/>
       <Router>
         <Switch>
-          <Route exact path="/" component={Home}/>
-          <Route path="/createUser" component={CreateUser}/>
-          <Route path="/dashboard" component={Dashboard}/>
-          <Route path="/redirectAfterLogin" component={RedirectAfterLogin}/>
+          <Route exact path="/">
+            <Home />
+          </Route>
+
+          <Route path="/createUser" >
+            <CreateUser />
+          </Route>
+
+          <Route path="/dashboard">
+            <Dashboard setIsLogged={setIsLogged} />
+          </Route>
+
+          <Route path="/redirectAfterLogin" >
+            <RedirectAfterLogin/>
+          </Route>
+
+          <Route path="/account" >
+            <Account />
+          </Route>
         </Switch>
       </Router>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

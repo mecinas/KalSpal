@@ -9,8 +9,9 @@ export default function RedirectAfterLogin() {
 
     useEffect(() => {
         if (typeof isRegistered === "boolean") {
-            if (isRegistered)
+            if (isRegistered){
                 setRedirection(<Redirect to='/dashboard' />)
+            }
             else
                 setRedirection(<Redirect to='/createUser' />)
         }

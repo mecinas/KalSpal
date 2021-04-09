@@ -5,7 +5,8 @@ import logo from '../resources/company_logo.png'
 import "../styles/DefaultNavbar.css"
 
 
-export default function DefaultNavbar() {
+export default function DefaultNavbar(props) {
+    
     return (
         <div>
             <Navbar bg="warning" >
@@ -14,8 +15,14 @@ export default function DefaultNavbar() {
                 </Navbar.Brand>
 
                 <Nav className="ml-auto">
-                    <Button variant="outline-success" href="/">Dowiedz się więcej o nas</Button>
+                    {!props.isLogged &&
+                        <Button variant="outline-success" href="/">Dowiedz się więcej o nas</Button>
+                    }
+                    {props.isLogged &&
+                        <Button variant="outline-success" href="/account">Moje konto</Button>
+                    }
                 </Nav>
+
             </Navbar>
         </div>
     )
