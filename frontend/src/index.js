@@ -7,7 +7,6 @@ const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 const redirectEndpoint = `/redirectAfterLogin`
-
 ReactDOM.render(
   <Auth0Provider
     domain={domain}

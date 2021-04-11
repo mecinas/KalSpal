@@ -15,8 +15,7 @@ import Account from "./components/Account"
 //Zarządzanie znajomymi
 
 function App() {
-  const [isLogged, setIsLogged] = useState(false);
-
+  const [isLogged, setIsLogged] = useState(localStorage.getItem("isLogged"))
 
   return (
     <div className="App">
@@ -31,8 +30,8 @@ function App() {
             <CreateUser />
           </Route>
 
-          <Route path="/dashboard">
-            <Dashboard setIsLogged={setIsLogged} />
+          <Route path="/dashboard" >
+            <Dashboard setIsLogged={setIsLogged}/>
           </Route>
 
           <Route path="/redirectAfterLogin" >

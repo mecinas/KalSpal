@@ -1,17 +1,12 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 
 export default function Dashboard(props) {
-
-    useEffect(() => {
-        props.setIsLogged(true);
-        return () => {
-            props.setIsLogged(true);
-        }
-    }, [])
-
+    props.setIsLogged(true)
+    localStorage.setItem('isLogged', true)
+    
     return (
         <div>
-            
+
         </div>
     )
 }
