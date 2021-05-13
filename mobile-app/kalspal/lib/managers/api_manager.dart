@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:http/http.dart' as http;
+import 'package:kalspal/models/workout.dart';
 
 class ApiManager {
   final String API_URL = DotEnv.env['API_URL'];
@@ -20,13 +21,23 @@ class ApiManager {
     return false;
   }
 
-  Future<bool> addWorkout(String accessToken, String workout) async {
+//  Future<bool> addWorkout(String accessToken, String workout) async {
+  Future<bool> addWorkout(String accessToken, Workout workout, String workoutGpxString) async {
     String url = API_URL + ENDPOINTS['ADD_WORKOUT'];
     var headers = <String, String>{
       'Authorization': 'Bearer $accessToken',
       'Content-Type': 'application/json'
     };
-    var body = jsonEncode(<String, String>{'workout': "$workout"});
+    var body = jsonEncode(<String, String>{
+      'name': workout.name,
+      'type': workout.type,
+      'start': workout.start.toString(),
+      'end': workout.end.toString(),
+      'gpx': workoutGpxString
+      }
+      );
+
+      print(body.toString());
 
     final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 201) return true;

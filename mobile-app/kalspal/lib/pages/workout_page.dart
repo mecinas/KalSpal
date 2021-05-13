@@ -218,10 +218,13 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 positions: positions);
             GpxManager gpxManager = new GpxManager();
             Gpx workoutGpx = gpxManager.getGpxFromWorkout(workout);
-            String sWorkout = gpxManager.getGpxString(workoutGpx);
+            String workoutGpxString = gpxManager.getGpxString(workoutGpx);
 
             ApiManager apiManager = new ApiManager();
-            bool isSuccess = await apiManager.addWorkout(accessToken, sWorkout);
+
+            //bool isSuccess = await apiManager.addWorkout(accessToken, sWorkout);
+            bool isSuccess = await apiManager.addWorkout(accessToken, workout, workoutGpxString);
+
             if (isSuccess)
               showSnackBar("Twój trening został pomyślnie udostepniony", 7);
             else

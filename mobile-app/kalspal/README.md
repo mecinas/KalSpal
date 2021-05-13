@@ -12,13 +12,11 @@ Nagłówek:
   Ciało:
 ```json
 {
-  "workout": {
-      "name": "nazwa treningu",                     // String
-      "type": "typ treningu [run/cycling]",         // String
-      "start": "data i czas rozpoczęcia treningu",  // String
-      end: "data i czas zakończenia treningu",      // String
-      gpx: <plik gpx z danymi o treningu sprowadzony do String (.toString())>       // String
-  }
+    "name": "nazwa treningu",                     // String
+    "type": "typ treningu [run/cycling]",         // String
+    "start": "data i czas rozpoczęcia treningu",  // String
+    "end": "data i czas zakończenia treningu",      // String
+    "gpx": "<plik gpx z danymi o treningu sprowadzony do String (.toString())>"       // String
 }
 ```
 
