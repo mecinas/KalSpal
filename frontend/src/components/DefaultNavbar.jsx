@@ -1,25 +1,39 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Navbar, Nav, Button, Image } from 'react-bootstrap'
+import { useAuth0 } from "@auth0/auth0-react";
+import { connect } from "react-redux";
 
 import logo from '../resources/company_logo.png'
 import "../styles/DefaultNavbar.css"
 
+const LogoutButton = () => {
+    const { logout } = useAuth0();
+    return (
+        <Button variant="outline-success" onClick={() => logout({ returnTo: window.location.origin })}>
+            Wyloguj
+        </Button>
+    );
+};
 
-export default function DefaultNavbar(props) {
-    
+function DefaultNavbar(props) {
     return (
         <div>
             <Navbar bg="warning" >
                 <Navbar.Brand>
-                    <Image src={logo} />
+                    <Image src={logo} className="logo-img" />
                 </Navbar.Brand>
 
                 <Nav className="ml-auto">
-                    {!props.isLogged &&
-                        <Button variant="outline-success" href="/">Dowiedz się więcej o nas</Button>
+                    {!props.isLoggedIn &&
+                        <Button className="btn-navbar" variant="outline-success" href="/">Dowiedz się więcej o nas</Button>
                     }
-                    {props.isLogged &&
-                        <Button variant="outline-success" href="/account">Moje konto</Button>
+                    {props.isLoggedIn &&
+                        <div>
+                            <Button className="btn-navbar" variant="outline-success" href="/dashboard">Tablica</Button>
+                            <Button className="btn-navbar" variant="outline-success" href="/workouts">Treningi</Button>
+                            <Button className="btn-navbar" variant="outline-success" href="/account">Moje konto</Button>
+                            <LogoutButton />
+                        </div>
                     }
                 </Nav>
 
@@ -27,3 +41,9 @@ export default function DefaultNavbar(props) {
         </div>
     )
 }
+
+function mapStateToProps(state) {
+    return state;
+}
+
+export default DefaultNavbar = connect(mapStateToProps)(DefaultNavbar);

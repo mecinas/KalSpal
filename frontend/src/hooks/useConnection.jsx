@@ -3,6 +3,16 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 const path = 'https://app-kalspal-dev.azurewebsites.net'
 
+function useGetAccessToken(){
+    const { getAccessTokenSilently } = useAuth0();
+    async function makeRequest() {
+        const token = await getAccessTokenSilently({
+            audience: 'https://kal-spal-dev.com'
+        });
+        localStorage.setItem('access_token', token)
+    }
+    makeRequest();
+}
 function useCheckAvailAccount(setIsRegistered) {
     const endpoint = '/api/user/check/registration'
     const { getAccessTokenSilently } = useAuth0();
@@ -54,4 +64,4 @@ function useRegisterAccount(registerData) {
 
 }
 
-export { useCheckAvailAccount, useRegisterAccount }
+export { useCheckAvailAccount, useRegisterAccount, useGetAccessToken }
