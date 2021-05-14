@@ -2,14 +2,14 @@ import React from 'react'
 import { connect } from "react-redux";
 import { Card, Button, Accordion, Form, Row, Col, Container } from 'react-bootstrap'
 import { BsHeart, BsChatSquare } from 'react-icons/bs'
-
-import placeholder from "../resources/placeholder-1.png"
+import Map from './Map';
+import { v4 as uuidv4 } from "uuid";
 
 function Post(props) {
 
     return (
         <Card>
-            <Card.Img src={placeholder} />
+            <Map height="400px" mapId={uuidv4()} />
             <Card.Body>
                 <Card.Title>{props.post.title}</Card.Title>
                 <Card.Text>
@@ -36,12 +36,12 @@ function Post(props) {
                             ))}
                             <Form>
                                 <Form.Group controlId="comment">
-                                    <Form.Control as="textarea" rows={3} placeholder="Dodaj komentarz"/>
+                                    <Form.Control as="textarea" rows={3} placeholder="Dodaj komentarz" />
                                 </Form.Group>
                                 <div className="d-flex justify-content-end">
                                     <Button variant="primary" type="submit">
                                         Skomentuj
-                                </Button>
+                                    </Button>
                                 </div>
                             </Form>
                         </div>
