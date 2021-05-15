@@ -1,79 +1,42 @@
 # KalSpal
-# API
- **/workout** [POST]
+## _Eat, Sleep, Run, Repeat_
 
-  - ***opis*** :  Dodanie nowego treningu
-  - ***żadanie*** : 
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-Nagłówek:
+KalSpal help users track their fitness and health statistics. This project consists of a website and mobile application.
+It is worth mentioning that this project would be too hard for solo development, so we are **working in a team** to successfully deliver it. This part is a mobile application for KalSpal, which will work on both Android and iOS phones.
+
+## Features
+- Login to KalSpal system
+- Login with Auth0 to KalSpal system
+- Show informations about the user
+- Record user workout
+- Upload workout to KalSpal system
+
+
+
+## Tech
+**Flutter**, **Dart** (also a bit of **Java** and **Swift**) were used to create the project.
+In addition, the following Dart packages were used:
+- [**cupertino_icons**] - default icons asset for Cupertino widgets,
+- [**http**] - API for handling HTTP requests,
+- [**flutter_appauth**] - helpful during auth0 integration,
+- [**flutter_secure_storage**] - useful for storing data securely on both ios and Android,
+- [**location**] - get realtime location of a user in iOS and Android,
+- [**flutter_dotenv**] - helpful for handling .env files,
+- [**gpx**] - useful for handling GPS data in GPX format.
+
+This mobile app would be useless without KalSpal API that helps mobile app to integrate and communicate with the KalSpal central system.
+https://github.com/mecinas/KalSpal/tree/backend
+
+
+## Launching
+Anyone can install and test this application on their own.
+Just plug in your mobile device, make sure that You are in the **mobile-app/kalspal** folder, then run:
 ```sh
-"Authorization": "Bearer " + <accessToken>
-```
-  Ciało:
-```json
-{
-    "name": "nazwa treningu",                     // String
-    "type": "typ treningu [run/cycling]",         // String
-    "start": "data i czas rozpoczęcia treningu",  // String
-    "end": "data i czas zakończenia treningu",      // String
-    "gpx": "<plik gpx z danymi o treningu sprowadzony do String (.toString())>"       // String
-}
+flutter run
 ```
 
 
-  - ***odpowiedź*** : 
-  Zawartość ciała (jeżeli status odpowiedzi to 201):
-```json
-{
-  "message":"Twój trening został zapisany."
-}
-```
-
-  - ***struktura .gpx*** : 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="dart-gpx library">
-  <metadata>
-    <name>${nazwa_treningu}</name>
-    <keywords>${typ_treningu [run, cycling]}, ${data_rozpoczęcia_treningu}, ${data_zakończenia_treningu}</keywords>
-  </metadata>
-  <wpt lat=${szerokość_geograficzna_punktu} lon=${długość_geograficzna_punktu}>
-    <time>${data_dodania_punktu}</time>
-    <ele>${wysokość_geograficzna_punktu}</ele>
-  </wpt>
-  <wpt lat=... lon=...>
-    ...
-  </wpt>
-  ...
-  </wpt>
-</gpx>
-```
-
-
-
-  - ***Przykładowy plik .gpx*** : 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="dart-gpx library">
-  <metadata>
-    <name>Trening</name>
-    <keywords>run, 2021-02-10 20:25:56.490019, 2021-02-10 20:26:30.532531</keywords>
-  </metadata>
-  <wpt lat="37.1218980" lon="-122.016">
-    <time>2021-02-10T20:26:01.519138Z</time>
-    <ele>5.0</ele>
-  </wpt>
-  <wpt lat="37.1218981" lon="-122.011">
-    <time>2021-02-10T20:26:01.759003Z</time>
-    <ele>5.0</ele>
-  </wpt>
-  <wpt lat="37.1218983" lon="-122.013">
-    <time>2021-02-10T20:26:11.418739Z</time>
-    <ele>5.0</ele>
-  </wpt>
-  <wpt lat="37.1218985" lon="-122.014">
-    <time>2021-02-10T20:26:13.392704Z</time>
-    <ele>5.1</ele>
-  </wpt>
-</gpx>
-```
+## License
+MIT
