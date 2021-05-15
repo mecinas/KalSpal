@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import useScript from "../hooks/useScript";
 
 
@@ -7,15 +7,25 @@ export default function Map({ activityUrl, height, mapId }) {
     let map;
     const L = window.L;
 
+    const [gpx, setGpx] = useState();
+
     let status = useScript(
         "https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"
     );
 
     useEffect(() => {
         if (status === "ready") {
+            removeMap();
             init();
         }
     }, [status]);
+
+    function removeMap() {
+        const container = L.DomUtil.get('map-' + mapId);
+        if (container != null) {
+            container._leaflet_id = null;
+        }
+    }
 
     function init() {
         const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -63,20 +73,36 @@ export default function Map({ activityUrl, height, mapId }) {
     }
 
     function loadGPX(path) {
-        new L.GPX(path, {
+        let newGpx = new L.GPX(path, {
             async: true,
             marker_options: {
                 startIconUrl: process.env.PUBLIC_URL + '/leaflet/pin-icon-start.png',
                 endIconUrl: process.env.PUBLIC_URL + '/leaflet/pin-icon-end.png',
                 shadowUrl: process.env.PUBLIC_URL + '/leaflet/pin-shadow.png'
             }
-        }).on('loaded', function (e) {
+        })
+
+        newGpx.on('loaded', function (e) {
             map.fitBounds(e.target.getBounds());
-        }).addTo(map);
+        })
+        newGpx.addTo(map);
+
+        setGpx(newGpx);
     }
 
     return (
-        <div id={"map-" + mapId} style={{ height: height }}></div>
+        <>
+            <div id={"map-" + mapId} style={{ height: height }}></div>
+            {
+                gpx &&
+                <ul className="list-group list-group-horizontal mb-3 d-flex">
+                    <li className="list-group-item flex-fill">Dystans: {Math.round(gpx.get_distance() / 10) / 100} km</li>
+                    <li className="list-group-item flex-fill">Czas: TODO</li>
+                    <li className="list-group-item flex-fill">Średnia prędkość: TODO</li>
+                </ul>
+            }
+
+        </>
     )
 }
 

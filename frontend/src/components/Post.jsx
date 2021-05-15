@@ -9,8 +9,8 @@ function Post(props) {
 
     return (
         <Card>
-            <Map height="400px" mapId={uuidv4()} />
             <Card.Body>
+            <Map height="400px" mapId={uuidv4()} activityUrl={process.env.PUBLIC_URL + "/placeholder-gpx.gpx"} />
                 <Card.Title>{props.post.title}</Card.Title>
                 <Card.Text>
                     {props.post.desc}

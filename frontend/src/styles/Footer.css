@@ -4,7 +4,8 @@
     color: white;
     text-align: center;
     position: fixed;
-    bottom: -60px;
+    z-index: 1000;
+    bottom: -100px;
     width: 100%;
     transform: skewY(-1deg);
     border-top-left-radius: 40px;
