@@ -2,6 +2,7 @@ package com.pw.kalspal.controller;
 
 import com.pw.kalspal.entity.User;
 import com.pw.kalspal.repository.UserRepository;
+import com.pw.kalspal.util.AuthID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,7 +21,7 @@ public class FriendController {
 
     @GetMapping("/")
     public ResponseEntity<?> getAllFriends(Authentication authentication) {
-        String userId = authentication.getName();
+        String userId = AuthID.getID(authentication);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
         return ResponseEntity.ok(user.getFriends());
@@ -28,7 +29,7 @@ public class FriendController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFriend(@PathVariable String id, Authentication authentication) {
-        String userId = authentication.getName();
+        String userId = AuthID.getID(authentication);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
         User friend = userRepository.findById(id).orElseThrow(() ->

@@ -6,6 +6,7 @@ import com.pw.kalspal.entity.User;
 import com.pw.kalspal.payload.request.RespondToInvitationRequest;
 import com.pw.kalspal.repository.FriendInvitationRepository;
 import com.pw.kalspal.repository.UserRepository;
+import com.pw.kalspal.util.AuthID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,13 +29,12 @@ public class FriendInvitationController {
 
     @PostMapping("/send")
     public ResponseEntity<?> sendInvitation(@RequestBody JsonNode id, Authentication authentication) {
-        String userId = authentication.getName();
+        String userId = AuthID.getID(authentication);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
         User userInvited = userRepository.findById(id.get("user_id").textValue()).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot invite. Given id does not belong to any user."));
-        if (user.getInvitationsSent().stream().anyMatch(friendInvitation -> friendInvitation.getInvited().equals(userInvited)))
-        {
+        if (user.getInvitationsSent().stream().anyMatch(friendInvitation -> friendInvitation.getInvited().equals(userInvited))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already been invited.");
         }
         FriendInvitation friendInvitation = new FriendInvitation(user, userInvited);
@@ -44,7 +44,7 @@ public class FriendInvitationController {
 
     @GetMapping("/send")
     public ResponseEntity<?> getSentInvitations(Authentication authentication) {
-        String userId = authentication.getName();
+        String userId = AuthID.getID(authentication);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
         return ResponseEntity.ok(user.getInvitationsSent());
@@ -52,7 +52,7 @@ public class FriendInvitationController {
 
     @GetMapping("/received")
     public ResponseEntity<?> getReceivedInvitations(Authentication authentication) {
-        String userId = authentication.getName();
+        String userId = AuthID.getID(authentication);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
         return ResponseEntity.ok(user.getInvitationsReceived());
@@ -60,14 +60,13 @@ public class FriendInvitationController {
 
     @PostMapping("/respond")
     public ResponseEntity<?> respondToInvitation(@RequestBody @Valid RespondToInvitationRequest request, Authentication authentication) {
-        String userId = authentication.getName();
+        String userId = AuthID.getID(authentication);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
         FriendInvitation invitation = user.getInvitationsReceived().stream()
                 .filter(friendInvitation -> friendInvitation.getId().equals(request.getInvitation_id()))
                 .findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation ID not found"));
-        switch (request.getAction())
-        {
+        switch (request.getAction()) {
             case "accept":
                 user.getFriends().add(invitation.getInvitationAuthor());
                 invitation.getInvitationAuthor().getFriends().add(user);

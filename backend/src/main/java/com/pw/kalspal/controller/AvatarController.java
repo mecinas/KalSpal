@@ -6,6 +6,7 @@ import com.pw.kalspal.payload.response.MessageResponse;
 import com.pw.kalspal.payload.response.ResponseFile;
 import com.pw.kalspal.repository.AvatarRepository;
 import com.pw.kalspal.repository.UserRepository;
+import com.pw.kalspal.util.AuthID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,7 +35,7 @@ public class AvatarController {
 
     @PostMapping("/")
     public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file, Authentication authentication) {
-        String userId = authentication.getName();
+        String userId = AuthID.getID(authentication);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
         if (user.getAvatar() != null) {
@@ -44,8 +45,7 @@ public class AvatarController {
             userRepository.save(user);
             avatarRepository.delete(avatar);
         }
-        try
-        {
+        try {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             Avatar avatar = new Avatar(fileName, file.getContentType(), file.getBytes());
             String fileDownloadUri = ServletUriComponentsBuilder
@@ -57,11 +57,9 @@ public class AvatarController {
             user.setAvatarURL(fileDownloadUri);
             avatar.setUser(user);
             userRepository.save(user);
-
             return ResponseEntity.ok().build();
-        } catch (Exception e)
-        {
-            String message = "Could not upload the file: " + e.toString();
+        } catch (Exception e) {
+            String message = "Could not upload the file: " + e;
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse((message)));
         }
     }
@@ -87,7 +85,7 @@ public class AvatarController {
 
     @GetMapping(value = "/{id}")
     public void getAvatar(@PathVariable String id, HttpServletResponse response) throws IOException {
-        Avatar avatar = avatarRepository.findById(id).orElseThrow();
+        Avatar avatar = avatarRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Avatar not found"));
         response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
         response.getOutputStream().write(avatar.getData());
         response.getOutputStream().close();
@@ -95,7 +93,7 @@ public class AvatarController {
 
     @DeleteMapping("/")
     public ResponseEntity<?> deleteAvatar(Authentication authentication) {
-        String userId = authentication.getName();
+        String userId = AuthID.getID(authentication);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
         Avatar avatar = user.getAvatar();

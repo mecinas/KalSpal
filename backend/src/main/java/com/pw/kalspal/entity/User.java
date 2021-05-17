@@ -32,9 +32,9 @@ public class User implements Serializable {
     @NotNull
     private Date birthDate;
 
-    @JsonBackReference
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Workout> workouts = new ArrayList<>();
+    private List<Workout> workouts;
 
     @OneToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
@@ -54,7 +54,7 @@ public class User implements Serializable {
 
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("friends")
+    @JsonIgnore
     @JoinTable(name = "appusers_friends",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "friends_id", referencedColumnName = "id"))
@@ -160,3 +160,4 @@ public class User implements Serializable {
         this.friends = friends;
     }
 }
+
