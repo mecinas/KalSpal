@@ -8,7 +8,7 @@ import DefaultNavbar from './components/DefaultNavbar'
 import Footer from "./components/Footer"
 import Dashboard from "./components/Dashboard"
 import RedirectAfterLogin from "./components/RedirectAfterLogin"
-import Account from "./components/Account"
+import Account from "./components/account/Account"
 import Workouts from './components/Workouts'
 import User from "./components/User"
 import { useAuth0 } from '@auth0/auth0-react'

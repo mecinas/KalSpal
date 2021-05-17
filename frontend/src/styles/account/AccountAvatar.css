@@ -1,0 +1,16 @@
+.account_avatar_col{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5%;
+}
+
+.avatar_img{
+    width: 10%;
+}
+
+.pencil_ico{
+    border-radius: 100%;
+    position: absolute;
+    bottom: -3%;
+    left: 54%;
+}
