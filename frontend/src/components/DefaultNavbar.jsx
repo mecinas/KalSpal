@@ -18,7 +18,7 @@ const LogoutButton = () => {
 function DefaultNavbar(props) {
     return (
         <div>
-            <Navbar bg="warning" >
+            <Navbar bg="warning" className="mb-3">
                 <Navbar.Brand>
                     <Image src={logo} className="logo-img" />
                 </Navbar.Brand>

@@ -9,7 +9,7 @@ import Footer from "./components/Footer"
 import Dashboard from "./components/Dashboard"
 import RedirectAfterLogin from "./components/RedirectAfterLogin"
 import Account from "./components/account/Account"
-import Workouts from './components/Workouts'
+import Workouts from './components/workouts/Workouts'
 import User from "./components/User"
 import { useAuth0 } from '@auth0/auth0-react'
 import { useGetAccessToken } from './hooks/useConnection'
