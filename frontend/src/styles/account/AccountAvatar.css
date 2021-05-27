@@ -5,12 +5,13 @@
 }
 
 .avatar_img{
-    width: 10%;
+    border-radius: 100% !important;
+    width: 15%;
 }
 
 .pencil_ico{
-    border-radius: 100%;
+    border-radius: 100% !important;
     position: absolute;
     bottom: -3%;
-    left: 54%;
+    left: 55%;
 }

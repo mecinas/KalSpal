@@ -33,7 +33,7 @@ export default function UserAvatar(props) {
 
     return (
         <Col className="account_avatar_col">
-            <Image className="avatar_img" src={source} roundedCircle />
+            <Image className="avatar_img" src={source} />
             <Button className="pencil_ico" variant="light" onClick={handleFileInputClick}>
                 <Pencil color="brown" size={20} />
                 <input

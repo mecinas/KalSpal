@@ -1,8 +1,5 @@
 import React, { useEffect } from 'react'
-import axios from 'axios'
 import { connect } from "react-redux";
-import {useAuth0} from '@auth0/auth0-react'
-import {useHistory} from 'react-router-dom'
 import { getUser } from '../../redux/actions'
 import { Container, Row } from "react-bootstrap"
 import { fetchAvatar } from '../../scripts/script'
@@ -15,14 +12,13 @@ import UserInfoTable from './AccountInfoTable'
 import UserAvatar from './AccountAvatar'
 
 function Account(props) {
+
     useEffect(() => {
         if (props.accesstoken != undefined) {
             props.dispatch(getUser(props.accesstoken));
+            console.log(props.user)
         }
     }, [props.accesstoken]);
-
-    const { user } = useAuth0();
-    let history = useHistory();
 
     const putAvatar = (data, setSource, encodeImage) => {
         // var url = "https://app-kalspal-dev.azurewebsites.net/avatar"
@@ -76,34 +72,15 @@ function Account(props) {
         // history.push("/")
     }
 
-    const getInfo = (setUserInfo) => {
-        // var url = "https://app-kalspal-dev.azurewebsites.net/getInfo"
-        // if (user !== undefined) {
-        //     axios.get(url, {
-        //         params: {
-        //             email: user.email
-        //         }
-        //     })
-        //         .then(resp => {
-        //             setUserInfo(resp.data)
-        //         })
-        // }
-        var info = {
-            firstname: "Paweł",
-            surname: "Zawadzki",
-            dateOfBirth: "2020-10-30",
-            email: "zawadzki@pw.edu.pl"
-        }
-        setUserInfo(info)
-    }
-
     return (
         <Container className="account_container">
             <Row>
                 <UserAvatar getAvatar={getAvatar} putAvatar={putAvatar} />
             </Row>
             <Row>
-                <UserInfoTable getInfo={getInfo} deleteUser={deleteUser} />
+                {props.user &&
+                    <UserInfoTable deleteUser={deleteUser} user={props.user} />
+                }
             </Row>
         </Container>
     )

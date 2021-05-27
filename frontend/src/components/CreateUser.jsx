@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Form, Button, Jumbotron, Container } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
+import {useAuth0} from '@auth0/auth0-react'
 
 import '../styles/CreateUser.css'
 import { useRegisterAccount } from '../hooks/useConnection'
 
 export default function CreateUser() {
+    const { user } = useAuth0();
 
     const [formDataObj, setFormData] = useState({});
     const [doesRedirect, setDoesRedirect] = useState(false);
@@ -13,8 +15,10 @@ export default function CreateUser() {
 
     const onFormSubmit = e => {
         e.preventDefault()
-        const formData = new FormData(e.target)
-        setFormData(Object.fromEntries(formData.entries()))
+        var formData = new FormData(e.target)
+        formData = Object.fromEntries(formData.entries())
+        formData["email"] = user.email
+        setFormData(formData)
         setDoesRedirect(true);
     }
     
@@ -39,10 +43,6 @@ export default function CreateUser() {
 
                     <Form.Group controlId="formBasicSurname">
                         <Form.Control type="text" name='lastName' placeholder="Wprowadź nazwisko" />
-                    </Form.Group>
-
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Control type="text" name='email' placeholder="Wprowadź email" />
                     </Form.Group>
 
                     <Form.Group controlId="formBasicDate">

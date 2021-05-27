@@ -10,7 +10,6 @@ import '../../styles/account/AccountInfoTable.css'
 export default function UserInfoTable(props) {
     const history = useHistory();
     const { user, logout } = useAuth0();
-    const [userInfo, setUserInfo] = useState()
     const [modalTitle, setModalTitle] = useState();
     const [modalForm, setModalForm] = useState();
     const [modalURL, setModalURL] = useState();
@@ -47,13 +46,6 @@ export default function UserInfoTable(props) {
         )
     }
 
-    useEffect(() => {
-        props.getInfo(setUserInfo)
-        setTimeout(() => {
-            props.getInfo(setUserInfo)
-        }, 2000);
-    }, [user, showEditModal])
-
     return (
         <Col>
             {user &&
@@ -69,12 +61,11 @@ export default function UserInfoTable(props) {
                 <Card.Header>Profil</Card.Header>
                 <Card.Body >
                     <Card.Title className="text-left">Twoje informacje</Card.Title>
-                    {userInfo &&
                         <Table striped className="text-left">
                             <tbody>
                                 <tr>
                                     <td>Imię i nazwisko</td>
-                                    <td>{userInfo.firstname} {userInfo.surname}</td>
+                                    <td>{props.user.firstName} {props.user.lastName}</td>
                                     <td>
                                         <Button className="pencil_table_ico" variant="light" onClick={() => {
                                             setModalForName();
@@ -86,7 +77,7 @@ export default function UserInfoTable(props) {
                                 </tr>
                                 <tr>
                                     <td>Data urodzenia</td>
-                                    <td>{userInfo.dateOfBirth}</td>
+                                    <td>{props.user.birthDate}</td>
                                     <td>
                                         <Button className="pencil_table_ico" variant="light" onClick={() => {
                                             setModalForDateOfBirth();
@@ -98,11 +89,10 @@ export default function UserInfoTable(props) {
                                 </tr>
                                 <tr>
                                     <td>Adres e-mail</td>
-                                    <td colSpan="2">{userInfo.email}</td>
+                                    <td colSpan="2">{props.user.email}</td>
                                 </tr>
                             </tbody>
                         </Table>
-                    }
                 </Card.Body>
                 <Card.Footer>                    
                     <Button variant="outline-danger" onClick={props.deleteUser}>Usuń konto</Button>

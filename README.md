@@ -1,2 +1,4 @@
-# KalSpal
-App to manage your activities (WUT team project)
+Zamówienia na endpoint:
+Możliwość edycji daty urodzenia i Imienia z nazwiskiem
+Możliwość zmiany zdjęcia (chyba nie działało to)
+
