@@ -1,17 +1,37 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import useScript from "../hooks/useScript";
-
 
 export default function Map({ activityUrl, height, mapId }) {
 
-    let map;
-    const L = window.L;
-
+    const [map, setMap] = useState();
     const [gpx, setGpx] = useState();
+    const [width, setWidth] = useState();
+
+    const ref = useRef(null);
+    const L = window.L;
 
     let status = useScript(
         "https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"
     );
+
+    useEffect(() => {
+        setWidth(ref.current.clientHeight);
+    })
+
+    useEffect(() => {
+        if (map) {
+            map.invalidateSize()
+            if (gpx) {
+                try {
+                    map.fitBounds(gpx.getBounds());
+                } catch (error) {
+                    console.error(error);
+                    alert("Nie można wczytać trasy!");
+                }
+            }
+        }
+    }, [width])
+
 
     useEffect(() => {
         if (status === "ready") {
@@ -52,11 +72,13 @@ export default function Map({ activityUrl, height, mapId }) {
                 })
         }
 
-        map = L.map("map-" + mapId, {
+        let localMap = L.map("map-" + mapId, {
             center: [52.250036800, 21.0136778263],
             zoom: 12,
             layers: [layers["osm"]],
         });
+
+        setMap(localMap);
 
         var baseMaps = {
             "OpenStreetMap": layers["osm"],
@@ -64,15 +86,15 @@ export default function Map({ activityUrl, height, mapId }) {
             "Mapbox": layers["mapbox"]
         };
 
-        L.control.layers(baseMaps).addTo(map);
-        L.control.scale().addTo(map);
+        L.control.layers(baseMaps).addTo(localMap);
+        L.control.scale().addTo(localMap);
 
         if (activityUrl) {
-            loadGPX(activityUrl);
+            loadGPX(activityUrl, localMap);
         }
     }
 
-    function loadGPX(path) {
+    function loadGPX(path, map) {
         let newGpx = new L.GPX(path, {
             async: true,
             marker_options: {
@@ -90,19 +112,37 @@ export default function Map({ activityUrl, height, mapId }) {
         setGpx(newGpx);
     }
 
+    function getDistance() {
+        return Math.round(gpx.get_distance() / 10) / 100
+    }
+
+
+    function getTime() {
+        return new Date(gpx.get_total_time())
+            .toISOString()
+            .slice(11, -1)
+            .split(".")[0]
+    }
+
+    function getAverageSpeed() {
+        const kms = gpx.get_distance() / 1000;
+        const hours = gpx.get_total_time() / (1000 * 60 * 60);
+        return Math.round(kms / hours * 100) / 100;
+    }
+
+
     return (
-        <>
-            <div id={"map-" + mapId} style={{ height: height }}></div>
+        <div>
+            <div id={"map-" + mapId} ref={ref} style={{ height: height }}></div>
             {
                 gpx &&
                 <ul className="list-group list-group-horizontal mb-3 d-flex">
-                    <li className="list-group-item flex-fill">Dystans: {Math.round(gpx.get_distance() / 10) / 100} km</li>
-                    <li className="list-group-item flex-fill">Czas: TODO</li>
-                    <li className="list-group-item flex-fill">Średnia prędkość: TODO</li>
+                    <li className="list-group-item flex-fill">Dystans: {getDistance()} km</li>
+                    <li className="list-group-item flex-fill">Czas: {getTime()}</li>
+                    <li className="list-group-item flex-fill">Średnia prędkość: {getAverageSpeed()} km/h</li>
                 </ul>
             }
-
-        </>
+        </div>
     )
 }
 
