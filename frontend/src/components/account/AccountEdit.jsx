@@ -1,25 +1,17 @@
-import axios from 'axios';
-import React from 'react'
+import {connect} from 'react-redux'
+import {useState, useEffect} from 'react'
 import { Button, Modal, Form } from 'react-bootstrap'
+import {updateUser} from '../../redux/actions'
 
-export default function EditProfileModal(props) {
+function AccountEdit(props) {
+  const [rerender, setRerender] = useState();
 
   const onFormSubmit = (e) => {
     e.preventDefault();
     var formData = new FormData(e.target)
     formData = Object.fromEntries(formData.entries())
-    formData["email"] = props.email
-    updateProfileData(props.modalURL, formData)
+    props.dispatch(updateUser(props.accesstoken, formData))
     props.handleCloseEditModal();
-  }
-
-  const updateProfileData = (url, data) => {
-    axios.put(url, data)
-      .then(resp => {
-
-      }).catch(error => {
-        console.log(error.message)
-      })
   }
 
   return (
@@ -43,3 +35,9 @@ export default function EditProfileModal(props) {
     </Modal>
   )
 }
+
+function mapStateToProps(state){
+    return state
+}
+
+export default AccountEdit = connect(mapStateToProps)(AccountEdit)

@@ -24,11 +24,11 @@ export default function UserInfoTable(props) {
         setModalForm(
             <div>
                 <Form.Group controlId="formBasicFirstname">
-                    <Form.Control type="text" name='firstname' placeholder="Podaj nowe imię" />
+                    <Form.Control type="text" name='firstName' placeholder="Podaj nowe imię" />
                 </Form.Group>
 
                 <Form.Group controlId="formBasicSurname">
-                    <Form.Control type="text" name='surname' placeholder="Podaj nowe nazwisko" />
+                    <Form.Control type="text" name='lastName' placeholder="Podaj nowe nazwisko" />
                 </Form.Group>
             </div>
         )
@@ -40,7 +40,7 @@ export default function UserInfoTable(props) {
         setModalForm(
             <div>
                 <Form.Group controlId="formBasicDateOfBirth">
-                    <Form.Control type="date" name='dateOfBirth' placeholder="Podaj datę urodzenia" />
+                    <Form.Control type="date" name='birthDate' placeholder="Podaj datę urodzenia" />
                 </Form.Group>
             </div>
         )

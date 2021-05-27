@@ -24,6 +24,20 @@ function fetchUser(dispatch, url, token) {
         });
 }
 
+function patchUser(dispatch, url, token, data) {
+    fetch(url, {
+            method: 'PATCH',
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
 export function getWorkouts(token) {
     return (dispatch) => {
       fetchWorkouts(
@@ -40,6 +54,17 @@ export function getUser(token) {
         dispatch,
         path + '/api/user/',
         token
+      );
+    };
+}
+
+export function updateUser(token, data) {
+    return (dispatch) => {
+      patchUser(
+        dispatch,
+        path + '/api/user/',
+        token,
+        data
       );
     };
 }

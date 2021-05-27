@@ -16,7 +16,6 @@ function Account(props) {
     useEffect(() => {
         if (props.accesstoken != undefined) {
             props.dispatch(getUser(props.accesstoken));
-            console.log(props.user)
         }
     }, [props.accesstoken]);
 
