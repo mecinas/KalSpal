@@ -2,10 +2,13 @@ package com.pw.kalspal.controller;
 
 import com.pw.kalspal.entity.User;
 import com.pw.kalspal.payload.request.CreateUserRequest;
+import com.pw.kalspal.payload.request.PatchUserRequest;
 import com.pw.kalspal.payload.response.MessageResponse;
 import com.pw.kalspal.payload.response.WorkoutWithReactionInfoResponse;
 import com.pw.kalspal.repository.UserRepository;
+import com.pw.kalspal.service.UserService;
 import com.pw.kalspal.util.AuthID;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +21,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
+    @Autowired
+    UserService userService;
 
     private final UserRepository userRepository;
 
@@ -45,6 +51,13 @@ public class UserController {
         }
         User user = new User(userId, request.getFirstName(), request.getLastName(), request.getEmail(), request.getBirthDate());
         return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
+    }
+
+    @PatchMapping("/")
+    public ResponseEntity<?> patchUser(@RequestBody PatchUserRequest request, Authentication authentication) {
+        String userId = AuthID.getID(authentication);
+        userService.partialUpdate(userId, request);
+        return ResponseEntity.status(HttpStatus.OK).body(request);
     }
 
     @DeleteMapping("/")
