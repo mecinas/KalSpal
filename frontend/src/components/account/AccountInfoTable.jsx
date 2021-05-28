@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, Button, Table, Form, Col } from 'react-bootstrap';
-import {useHistory} from 'react-router-dom'
 import { Pencil } from 'react-bootstrap-icons';
 import { useAuth0 } from '@auth0/auth0-react';
+import { connect } from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
+import {removeUser} from '../../redux/actions'
 import EditProfileModal from './AccountEdit'
 import '../../styles/account/AccountInfoTable.css'
 
-export default function UserInfoTable(props) {
+function AccountInfoTable(props) {
     const history = useHistory();
     const { user, logout } = useAuth0();
     const [modalTitle, setModalTitle] = useState();
@@ -46,6 +48,12 @@ export default function UserInfoTable(props) {
         )
     }
 
+    const deleteUser = (e) => {
+        props.dispatch(removeUser(props.accesstoken))
+        logout({ returnTo: window.location.origin })
+        history.push("/")
+    }
+
     return (
         <Col>
             {user &&
@@ -57,10 +65,10 @@ export default function UserInfoTable(props) {
                     modalURL={modalURL}
                     email={user.email} />
             }
-            <Card className="text-center">
-                <Card.Header>Profil</Card.Header>
-                <Card.Body >
-                    <Card.Title className="text-left">Twoje informacje</Card.Title>
+                <Card className="text-center">
+                    <Card.Header>Profil</Card.Header>
+                    <Card.Body >
+                        <Card.Title className="text-left">Twoje informacje</Card.Title>
                         <Table striped className="text-left">
                             <tbody>
                                 <tr>
@@ -93,11 +101,20 @@ export default function UserInfoTable(props) {
                                 </tr>
                             </tbody>
                         </Table>
-                </Card.Body>
-                <Card.Footer>                    
-                    <Button variant="outline-danger" onClick={props.deleteUser}>Usuń konto</Button>
-                </Card.Footer>
-            </Card>
+                    </Card.Body>
+                    <Card.Footer>
+                        <Button 
+                            variant="outline-danger" 
+                            onClick={deleteUser}>
+                            Usuń konto
+                        </Button>{/* Dodać usuwanie usera */}
+                    </Card.Footer>
+                </Card>
         </Col>
     )
 }
+function mapStateToProps(state) {
+    return state
+}
+
+export default AccountInfoTable = connect(mapStateToProps)(AccountInfoTable)

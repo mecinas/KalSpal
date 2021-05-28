@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from "react-redux";
-import { Row, Col, Container, ListGroup, Image, Button, Card, Modal } from 'react-bootstrap'
+import { Row, Col, Container, ListGroup
+    , Button, Card, Modal } from 'react-bootstrap'
 import Post from './Post'
 import Avatar from './Avatar'
 import { BsTrophy, BsCalendar } from 'react-icons/bs'

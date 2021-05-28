@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { Card, Button, Accordion, Form, Row, Col, Container } from 'react-bootstrap'
+import { Card, Button, Accordion, Form } from 'react-bootstrap'
 import { BsHeart, BsChatSquare } from 'react-icons/bs'
 import Map from './Map';
 import { v4 as uuidv4 } from "uuid";

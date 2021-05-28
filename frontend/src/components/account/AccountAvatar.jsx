@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import {useAuth0} from '@auth0/auth0-react'
 import { Col, Image, Button } from 'react-bootstrap'
 import { Pencil } from 'react-bootstrap-icons'
+import {connect} from 'react-redux'
+import {addAvatar, getUser} from '../../redux/actions'
 
 import '../../styles/account/AccountAvatar.css'
+import placeholder from "../../resources/placeholder-1.png"
 
-export default function UserAvatar(props) {
+function AccountAvatar(props) {
     const [source, setSource] = useState({ source: null })
-    const { user } = useAuth0();
 
     const hiddenFileInput = React.useRef(null);
     const handleFileInputClick = e => {
@@ -16,20 +17,24 @@ export default function UserAvatar(props) {
     const handleFileInputChange = e => {
         const photoUploaded = e.target.files[0];
         const data = new FormData();
-        data.append('avatar', photoUploaded)
-        data.append('email', user.email)
-        props.putAvatar(data, setSource, encodeImage)
+        data.append('file', photoUploaded)
+        props.dispatch(addAvatar(props.accesstoken, data))
+        setTimeout(() => {
+            props.dispatch(getUser(props.accesstoken))
+        }, 1000)
     }
 
-    function encodeImage(arrayBuffer) {
-        let b64encoded = btoa([].reduce.call(new Uint8Array(arrayBuffer), function (p, c) { return p + String.fromCharCode(c) }, ''))
-        let mimetype = "image/png"
-        return "data:" + mimetype + ";base64," + b64encoded
+    const getAvatar = () => {
+        if(props.user !== undefined)
+            if(props.user.avatarURL === null)
+                setSource(placeholder)
+            else
+                setSource(props.user.avatarURL)
     }
 
     useEffect(() => {
-        props.getAvatar(setSource, encodeImage)
-    }, [user])
+        getAvatar()
+    }, [props.user])
 
     return (
         <Col className="account_avatar_col">
@@ -46,5 +51,11 @@ export default function UserAvatar(props) {
         </Col>
     )
 }
+
+function mapStoreToProps(state){
+    return state
+}
+
+export default AccountAvatar = connect(mapStoreToProps)(AccountAvatar)
 
 

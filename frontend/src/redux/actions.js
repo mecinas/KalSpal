@@ -24,6 +24,17 @@ function fetchUser(dispatch, url, token) {
         });
 }
 
+function postAvatar(dispatch, url, token, data) {
+    fetch(url, {
+            method: 'POST',
+            headers: {"Authorization": `Bearer ${token}`},
+            body: data
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
 function patchUser(dispatch, url, token, data) {
     fetch(url, {
             method: 'PATCH',
@@ -32,6 +43,16 @@ function patchUser(dispatch, url, token, data) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
+function deleteUser(dispatch, url, token) {
+    fetch(url, {
+        method: 'DELETE',
+        headers: {"Authorization": `Bearer ${token}`},
         })
         .catch((e) => {
             dispatch({ type: "ERROR", value: "Error connecting to API" });
@@ -58,6 +79,17 @@ export function getUser(token) {
     };
 }
 
+export function addAvatar(token, data) {
+    return (dispatch) => {
+      postAvatar(
+        dispatch,
+        path + '/api/avatar/',
+        token,
+        data
+      );
+    };
+}
+
 export function updateUser(token, data) {
     return (dispatch) => {
       patchUser(
@@ -69,6 +101,15 @@ export function updateUser(token, data) {
     };
 }
 
+export function removeUser(token) {
+    return (dispatch) => {
+      deleteUser(
+        dispatch,
+        path + '/api/user/',
+        token
+      );
+    };
+}
 
 function setWorkouts(workouts) {
     return {

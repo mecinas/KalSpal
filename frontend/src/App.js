@@ -12,7 +12,6 @@ import Account from "./components/account/Account"
 import Workouts from './components/workouts/Workouts'
 import User from "./components/User"
 import { useAuth0 } from '@auth0/auth0-react'
-import { useGetAccessToken } from './hooks/useConnection'
 import PrivateRoute from './components/PrivateRoute'
 import { setAccessToken, setIsLoggedIn } from './redux/actions'
 import './styles/Avatar.css'
@@ -23,7 +22,7 @@ import './styles/Avatar.css'
 //Zarządzanie znajomymi
 
 function App(props) {
-  const [isLogged, setIsLogged] = useState(localStorage.getItem("isLogged"))
+  const [isLogged] = useState(localStorage.getItem("isLogged"))
   const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0()
 
   useEffect(() => {
@@ -34,7 +33,7 @@ function App(props) {
         let acctoken = await getAccessTokenSilently({
           audience: 'https://kal-spal-dev.com'
         });
-        if (acctoken != props.accesstoken) {
+        if (acctoken !== props.accesstoken) {
           props.dispatch(setAccessToken(acctoken))
         }
       }

@@ -1,16 +1,18 @@
 import {connect} from 'react-redux'
-import {useState, useEffect} from 'react'
+import { getUser } from '../../redux/actions'
 import { Button, Modal, Form } from 'react-bootstrap'
 import {updateUser} from '../../redux/actions'
 
 function AccountEdit(props) {
-  const [rerender, setRerender] = useState();
 
   const onFormSubmit = (e) => {
     e.preventDefault();
     var formData = new FormData(e.target)
     formData = Object.fromEntries(formData.entries())
     props.dispatch(updateUser(props.accesstoken, formData))
+    setTimeout(() => {
+      props.dispatch(getUser(props.accesstoken));
+    }, 1000)
     props.handleCloseEditModal();
   }
 

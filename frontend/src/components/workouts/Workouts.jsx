@@ -7,7 +7,7 @@ import Workout from './Workout';
 
 function Workouts(props) {
     useEffect(() => {
-        if (props.accesstoken != undefined) {
+        if (props.accesstoken !== undefined) {
             props.dispatch(getWorkouts(props.accesstoken));
         }
     }, [props.accesstoken]);

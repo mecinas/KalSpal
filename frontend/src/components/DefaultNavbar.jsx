@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Navbar, Nav, Button, Image } from 'react-bootstrap'
 import { useAuth0 } from "@auth0/auth0-react";
 import { connect } from "react-redux";

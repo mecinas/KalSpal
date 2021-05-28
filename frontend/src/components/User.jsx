@@ -1,9 +1,8 @@
 import React, {useEffect} from 'react'
 import { connect } from "react-redux";
-import { Row, Col, Container, ListGroup, Image, Button, Card } from 'react-bootstrap'
+import { Row, Col, Container, Button, Card } from 'react-bootstrap'
 import Post from './Post'
 import Avatar from './Avatar'
-import { BsTrophy, BsCalendar } from 'react-icons/bs'
 import { setSelectedUser } from '../redux/actions'
 
 import placeholder from "../resources/placeholder-1.png"

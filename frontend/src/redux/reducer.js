@@ -14,8 +14,5 @@ export function reducer(state, action) {
     }else if (action.type === "SET_SELECTEDFRIEND") {
         return { ...state, selectedfriend: action.value };
     }
-    else if (action.type === "PATCH") {
-        return { ...state };
-    }
     return state;
 }
