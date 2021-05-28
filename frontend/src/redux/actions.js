@@ -69,6 +69,18 @@ export function getWorkouts(token) {
     };
 }
 
+export function deleteWorkout(token, id) {
+    return (dispatch) => {
+      fetch(path + '/api/workout/' + id, {
+        method: 'DELETE',
+        headers: {"Authorization": `Bearer ${token}`},
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+    };
+}
+
 export function getUser(token) {
     return (dispatch) => {
       fetchUser(
