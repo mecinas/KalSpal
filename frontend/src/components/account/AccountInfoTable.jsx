@@ -47,7 +47,7 @@ function AccountInfoTable(props) {
             </div>
         )
     }
-
+    
     const deleteUser = (e) => {
         props.dispatch(removeUser(props.accesstoken))
         logout({ returnTo: window.location.origin })

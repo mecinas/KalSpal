@@ -13,6 +13,8 @@ export function reducer(state, action) {
         return { ...state, selecteduser: action.value };
     }else if (action.type === "SET_SELECTEDFRIEND") {
         return { ...state, selectedfriend: action.value };
+    }else if (action.type === "SET_ALLUSERS") {
+        return { ...state, allusers: action.value };
     }
     return state;
 }

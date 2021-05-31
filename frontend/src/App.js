@@ -17,8 +17,6 @@ import { setAccessToken, setIsLoggedIn } from './redux/actions'
 import './styles/Avatar.css'
 
 //TODOS
-//Zarządzanie kontem
-//Konstrukcja budowy przechowywania info
 //Zarządzanie znajomymi
 
 function App(props) {
@@ -39,8 +37,7 @@ function App(props) {
       }
       makeRequest();
     }
-    else if (!isLoading && !isAuthenticated){
-      console.log(isAuthenticated)
+    else if (!isLoading && !isAuthenticated) {
       props.dispatch(setIsLoggedIn(false))
       localStorage.setItem('isLogged', false)
       props.dispatch(setAccessToken(undefined))
@@ -49,13 +46,13 @@ function App(props) {
 
   return (
     <div className="App">
-      <DefaultNavbar isLogged={isLogged} />
-      {props.errors.map((e, idx) => (
-        <div class="alert alert-danger display-none" role="alert">
-          {e}
-        </div>
-      ))}
       <Router>
+        <DefaultNavbar isLogged={isLogged} />
+        {props.errors.map((e, idx) => (
+          <div class="alert alert-danger display-none" role="alert">
+            {e}
+          </div>
+        ))}
         <Switch>
           <Route exact path="/">
             <Home />
@@ -65,7 +62,7 @@ function App(props) {
             <CreateUser />
           </Route>
 
-          <PrivateRoute path="/dashboard"  component={Dashboard}>
+          <PrivateRoute path="/dashboard" component={Dashboard}>
           </PrivateRoute>
 
           <Route path="/redirectAfterLogin">

@@ -1,5 +1,7 @@
 const path = 'https://app-kalspal-dev.azurewebsites.net'
 
+//Ustandaryzowanie requestów
+
 function fetchWorkouts(dispatch, url, token) {
     fetch(url, {headers: {"Authorization": `Bearer ${token}`}})
         .then((res) => 
@@ -22,6 +24,38 @@ function fetchUser(dispatch, url, token) {
         .catch((e) => {
             dispatch({ type: "ERROR", value: "Error connecting to API" });
         });
+}
+
+function fetchAllUsers(dispatch, url, token) {
+    fetch(url, {headers: {"Authorization": `Bearer ${token}`}})
+        .then((res) => 
+            res.json())
+        .then((json) => {
+            dispatch({ type: "SET_ALLUSERS", value: json});
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
+export function getWorkouts(token) {
+    return (dispatch) => {
+      fetchWorkouts(
+        dispatch,
+        path + '/api/workout/',
+        token
+      );
+    };
+}
+
+export function getAllUsers(token) {
+    return (dispatch) => {
+      fetchAllUsers(
+        dispatch,
+        path + '/api/user/all/',
+        token,
+      );
+    };
 }
 
 function postAvatar(dispatch, url, token, data) {
@@ -57,16 +91,6 @@ function deleteUser(dispatch, url, token) {
         .catch((e) => {
             dispatch({ type: "ERROR", value: "Error connecting to API" });
         });
-}
-
-export function getWorkouts(token) {
-    return (dispatch) => {
-      fetchWorkouts(
-        dispatch,
-        path + '/api/workout/',
-        token
-      );
-    };
 }
 
 export function deleteWorkout(token, id) {
@@ -131,6 +155,7 @@ function setWorkouts(workouts) {
 }
 
 function setUser(user) {
+    user.birthDate = user.birthDate.slice(0, 10)
     return {
         type: "SET_USER",
         value: user

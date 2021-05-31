@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Jumbotron, Container } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
-import {useAuth0} from '@auth0/auth0-react'
+import { useAuth0 } from '@auth0/auth0-react'
 
 import '../styles/CreateUser.css'
 import { useRegisterAccount } from '../hooks/useConnection'
@@ -21,7 +21,7 @@ export default function CreateUser() {
         setFormData(formData)
         setDoesRedirect(true);
     }
-    
+
     if (doesRedirect)
         return <Redirect to="/dashboard" />
     else
@@ -58,7 +58,7 @@ export default function CreateUser() {
                     <Form.Group className="btn-group">
                         <Button className="submit-btn" variant="warning" type="submit">
                             Prześlij
-                    </Button>
+                        </Button>
                     </Form.Group>
 
                 </Form>

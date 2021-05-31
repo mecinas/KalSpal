@@ -17,17 +17,6 @@ function Account(props) {
     }, [props.accesstoken]);
 
 
-    const deleteUser = () => {
-        // var url = "https://app-kalspal-dev.azurewebsites.net/register"
-        // axios.delete(url, { data: { email: user.email } })
-        //     .then(response => {
-        //     })
-        //     .catch(error => {
-        //         console.log(error.message)
-        //     })
-        // history.push("/")
-    }
-
     return (
         <Container className="account_container">
             <Row>
@@ -35,7 +24,7 @@ function Account(props) {
             </Row>
             <Row>
                 {props.user &&
-                    <AccountInfoTable deleteUser={deleteUser} user={props.user} />
+                    <AccountInfoTable user={props.user} />
                 }
             </Row>
         </Container>

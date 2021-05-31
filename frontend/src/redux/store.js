@@ -10,6 +10,7 @@ const initialState = {
   user: undefined,
   selecteduser: undefined,
   selectedfriend: undefined,
+  allusers: undefined,
   posts: [{
     "id": "1",
     "title": "Poranna przejażdżka",
