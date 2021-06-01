@@ -88,6 +88,13 @@ public class UserController {
                 userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOne(Authentication authentication, @PathVariable String id) {
+        return ResponseEntity.ok(
+                userRepository.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")));
+    }
+
     @GetMapping("/{id}/friends")
     public ResponseEntity<?> getFriends(Authentication authentication, @PathVariable String id) {
         return ResponseEntity.ok(
