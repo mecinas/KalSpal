@@ -3,8 +3,8 @@ const path = 'https://app-kalspal-dev.azurewebsites.net'
 //Ustandaryzowanie requestów
 
 function fetchWorkouts(dispatch, url, token) {
-    fetch(url, {headers: {"Authorization": `Bearer ${token}`}})
-        .then((res) => 
+    fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
+        .then((res) =>
             res.json())
         .then((json) => {
             dispatch(setWorkouts(json));
@@ -15,8 +15,8 @@ function fetchWorkouts(dispatch, url, token) {
 }
 
 function fetchUser(dispatch, url, token) {
-    fetch(url, {headers: {"Authorization": `Bearer ${token}`}})
-        .then((res) => 
+    fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
+        .then((res) =>
             res.json())
         .then((json) => {
             dispatch(setUser(json));
@@ -27,43 +27,186 @@ function fetchUser(dispatch, url, token) {
 }
 
 function fetchAllUsers(dispatch, url, token) {
-    fetch(url, {headers: {"Authorization": `Bearer ${token}`}})
-        .then((res) => 
+    fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
+        .then((res) =>
             res.json())
         .then((json) => {
-            dispatch({ type: "SET_ALLUSERS", value: json});
+            dispatch({ type: "SET_ALLUSERS", value: json });
         })
         .catch((e) => {
             dispatch({ type: "ERROR", value: "Error connecting to API" });
         });
 }
 
+function fetchPosts(dispatch, url, token) {
+    fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
+        .then((res) =>
+            res.json())
+        .then((json) => {
+            dispatch(setComments({}))
+            dispatch(setReactions({}))
+            console.log(json)
+            dispatch(setPosts(json))
+            for (const workout in json) {
+                dispatch(getComments(token, json[workout].id))
+                dispatch(getReactions(token, json[workout].id))
+            }
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
+function fetchComments(dispatch, url, token, id) {
+    fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
+        .then((res) =>
+            res.json())
+        .then((json) => {
+            dispatch(addComments(json, id))
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
+function fetchReactions(dispatch, url, token, id) {
+    fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
+        .then((res) =>
+            res.json())
+        .then((json) => {
+            dispatch(addReactions(json, id))
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
+function fetchFriends(dispatch, url, token) {
+    fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
+        .then((res) =>
+            res.json())
+        .then((json) => {
+            dispatch(setFriends(json))
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
+
 export function getWorkouts(token) {
     return (dispatch) => {
-      fetchWorkouts(
-        dispatch,
-        path + '/api/workout/',
-        token
-      );
+        fetchWorkouts(
+            dispatch,
+            path + '/api/workout/',
+            token
+        );
+    };
+}
+
+export function getPosts(token) {
+    return (dispatch) => {
+        fetchPosts(
+            dispatch,
+            path + '/api/workout/',
+            token
+        );
+    };
+}
+
+export function getUserPosts(token, id) {
+    return (dispatch) => {
+        fetchPosts(
+            dispatch,
+            path + `/api/user/${id}/workouts`,
+            token
+        );
+    };
+}
+
+export function getComments(token, id) {
+    return (dispatch) => {
+        fetchComments(
+            dispatch,
+            path + `/api/workout/${id}/comments`,
+            token,
+            id
+        );
+    };
+}
+
+export function getReactions(token, id) {
+    return (dispatch) => {
+        fetchReactions(
+            dispatch,
+            path + `/api/workout/${id}/reactions`,
+            token,
+            id
+        );
+    };
+}
+
+export function getFriends(token) {
+    return (dispatch) => {
+        fetchFriends(
+            dispatch,
+            path + '/api/friend/',
+            token
+        );
+    };
+}
+
+export function updateReaction(token, id) {
+    return (dispatch) => {
+        postReaction(
+            dispatch,
+            path + `/api/workout/${id}/reactions`,
+            token,
+            id
+        );
     };
 }
 
 export function getAllUsers(token) {
     return (dispatch) => {
-      fetchAllUsers(
-        dispatch,
-        path + '/api/user/all/',
-        token,
-      );
+        fetchAllUsers(
+            dispatch,
+            path + '/api/user/all/',
+            token,
+        );
     };
 }
 
 function postAvatar(dispatch, url, token, data) {
     fetch(url, {
-            method: 'POST',
-            headers: {"Authorization": `Bearer ${token}`},
-            body: data
-        })
+        method: 'POST',
+        headers: { "Authorization": `Bearer ${token}` },
+        body: data
+    })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
+function postReaction(dispatch, url, token, id) {
+    fetch(url, {
+        method: 'POST',
+        headers: { "Authorization": `Bearer ${token}` }
+    })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
+function postComment(dispatch, url, token, data) {
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
         .catch((e) => {
             dispatch({ type: "ERROR", value: "Error connecting to API" });
         });
@@ -71,13 +214,13 @@ function postAvatar(dispatch, url, token, data) {
 
 function patchUser(dispatch, url, token, data) {
     fetch(url, {
-            method: 'PATCH',
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
+        method: 'PATCH',
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
         .catch((e) => {
             dispatch({ type: "ERROR", value: "Error connecting to API" });
         });
@@ -86,8 +229,18 @@ function patchUser(dispatch, url, token, data) {
 function deleteUser(dispatch, url, token) {
     fetch(url, {
         method: 'DELETE',
-        headers: {"Authorization": `Bearer ${token}`},
-        })
+        headers: { "Authorization": `Bearer ${token}` },
+    })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
+function deleteComment(dispatch, url, token) {
+    fetch(url, {
+        method: 'DELETE',
+        headers: { "Authorization": `Bearer ${token}` },
+    })
         .catch((e) => {
             dispatch({ type: "ERROR", value: "Error connecting to API" });
         });
@@ -95,55 +248,76 @@ function deleteUser(dispatch, url, token) {
 
 export function deleteWorkout(token, id) {
     return (dispatch) => {
-      fetch(path + '/api/workout/' + id, {
-        method: 'DELETE',
-        headers: {"Authorization": `Bearer ${token}`},
+        fetch(path + '/api/workout/' + id, {
+            method: 'DELETE',
+            headers: { "Authorization": `Bearer ${token}` },
         })
-        .catch((e) => {
-            dispatch({ type: "ERROR", value: "Error connecting to API" });
-        });
+            .catch((e) => {
+                dispatch({ type: "ERROR", value: "Error connecting to API" });
+            });
     };
 }
 
 export function getUser(token) {
     return (dispatch) => {
-      fetchUser(
-        dispatch,
-        path + '/api/user/',
-        token
-      );
+        fetchUser(
+            dispatch,
+            path + '/api/user/',
+            token
+        );
     };
 }
 
 export function addAvatar(token, data) {
     return (dispatch) => {
-      postAvatar(
-        dispatch,
-        path + '/api/avatar/',
-        token,
-        data
-      );
+        postAvatar(
+            dispatch,
+            path + '/api/avatar/',
+            token,
+            data
+        );
+    };
+}
+
+export function submitComment(token, data, id) {
+    return (dispatch) => {
+        postComment(
+            dispatch,
+            path + `/api/workout/${id}/comments`,
+            token,
+            data
+        );
     };
 }
 
 export function updateUser(token, data) {
     return (dispatch) => {
-      patchUser(
-        dispatch,
-        path + '/api/user/',
-        token,
-        data
-      );
+        patchUser(
+            dispatch,
+            path + '/api/user/',
+            token,
+            data
+        );
     };
 }
 
 export function removeUser(token) {
     return (dispatch) => {
-      deleteUser(
-        dispatch,
-        path + '/api/user/',
-        token
-      );
+        deleteUser(
+            dispatch,
+            path + '/api/user/',
+            token
+        );
+    };
+}
+
+export function removeComment(token, postid, commentid) {
+    return (dispatch) => {
+        deleteComment(
+            dispatch,
+            path + `/api/workout/${postid}/comments/${commentid}`,
+            token
+        );
     };
 }
 
@@ -187,5 +361,57 @@ export function setSelectedFriend(user) {
     return {
         type: "SET_SELECTEDFRIEND",
         value: user
+    };
+}
+
+export function setPosts(posts) {
+    return {
+        type: "SET_POSTS",
+        value: posts
+    };
+}
+
+export function setComments(comments) {
+    return {
+        type: "SET_COMMENTS",
+        value: comments
+    };
+}
+
+export function setFriends(friends) {
+    return {
+        type: "SET_FRIENDS",
+        value: friends
+    };
+}
+
+export function addComments(comments, post) {
+    return {
+        type: "ADD_COMMENTS",
+        value: comments,
+        post: post
+    };
+}
+
+export function addReactions(reactions, post) {
+    return {
+        type: "ADD_REACTIONS",
+        value: reactions,
+        post: post
+    };
+}
+
+export function setReactions(reactions) {
+    return {
+        type: "SET_REACTIONS",
+        value: reactions
+    };
+}
+
+
+export function setReaction(post) {
+    return {
+        type: "SET_REACTION",
+        value: post
     };
 }

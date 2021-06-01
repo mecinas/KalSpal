@@ -11,31 +11,10 @@ const initialState = {
   selecteduser: undefined,
   selectedfriend: undefined,
   allusers: undefined,
-  posts: [{
-    "id": "1",
-    "title": "Poranna przejażdżka",
-    "desc": "Tak się przejechałem",
-    "comments": [{"user": "Adam", "text": "Super trasa"}, {"user": "Janusz", "text": "Sprzedam Opla"}],
-    "likes": 37,
-    "gpx": "GPXDATA"
-  },{
-    "id": "2",
-    "title": "Inna trasa",
-    "desc": "Nowy rower :)",
-    "comments": [{"user": "Basia", "text": "Fajny rower!"}],
-    "likes": 37,
-    "gpx": "GPXDATA"
-  }],
-  friends: [{
-    "id": "2137",
-    "firstName": "Jan",
-    "lastName": "Kowalski",
-  }, {
-    "id": "1004",
-    "firstName": "Adam",
-    "lastName": "Nowak",
-  }
-  ]
+  posts: [],
+  friends: [],
+  comments: {},
+  reactions: {}
 };
 
 const store = createStore(reducer, initialState, applyMiddleware(thunk));

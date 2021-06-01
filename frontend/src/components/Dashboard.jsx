@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from "react-redux";
 import { Row, Col, Container, ListGroup
     , Button, Card, Modal } from 'react-bootstrap'
@@ -6,7 +6,7 @@ import Post from './Post'
 import Avatar from './Avatar'
 import { BsTrophy, BsCalendar } from 'react-icons/bs'
 import { useHistory } from 'react-router-dom';
-import { setSelectedFriend } from '../redux/actions'
+import { setSelectedFriend, getPosts, getUser, getFriends } from '../redux/actions'
 
 import placeholder from "../resources/placeholder-1.png"
 import "../styles/Dashboard.css"
@@ -15,6 +15,14 @@ function Dashboard(props) {
     const [showChallange, setShowChallange] = useState(false);
     const [showMeeting, setShowMeeting] = useState(false);
     const history = useHistory();
+    
+    useEffect(() => {
+        if (props.accesstoken !== undefined) {
+            props.dispatch(getUser(props.accesstoken));
+            props.dispatch(getPosts(props.accesstoken));
+            props.dispatch(getFriends(props.accesstoken));
+        }
+    }, [props.accesstoken]);
 
     function friendClicked(friend) {
         history.push(`/user/${friend}`)
@@ -58,7 +66,7 @@ function Dashboard(props) {
                                 <div >
                                     {props.posts.map((e, idx) => (
                                         <div key={idx} className="mb-3">
-                                            <Post post={e}></Post>
+                                            <Post post={e} home={true}></Post>
                                         </div>
                                     ))}
                                 </div>
@@ -72,7 +80,7 @@ function Dashboard(props) {
                                 {props.friends.map((e, idx) => (
                                     <ListGroup.Item key={idx} className="container-fluid">
                                         <Row>
-                                            <Col sm={2} className="pl-1 pr-1"><Avatar sauce={placeholder} /></Col>
+                                            <Col sm={2} className="pl-1 pr-1"><Avatar sauce={e.avatarURL} /></Col>
                                             <Col sm={6} className="d-flex justify-content-center align-self-center" onClick={() => friendClicked(e.id)}>{e.firstName} {e.lastName}</Col>
                                             <Col sm={2} className="d-flex justify-content-center"><Button variant="none" onClick={() => challangeClicked(e)}><BsTrophy /></Button></Col>
                                             <Col sm={2} className="d-flex justify-content-center"><Button variant="none" onClick={() => meetingClicked(e)} ><BsCalendar /></Button></Col>

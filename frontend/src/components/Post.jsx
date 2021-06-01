@@ -1,42 +1,105 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from "react-redux";
-import { Card, Button, Accordion, Form } from 'react-bootstrap'
-import { BsHeart, BsChatSquare } from 'react-icons/bs'
+import { Card, Button, Accordion, Form, Modal } from 'react-bootstrap'
+import { BsHeart, BsChatSquare, BsHeartFill } from 'react-icons/bs'
+import { GrBike } from 'react-icons/gr'
+import { FaRunning } from 'react-icons/fa'
+import { ImBin } from 'react-icons/im'
 import Map from './Map';
 import { v4 as uuidv4 } from "uuid";
+import { updateReaction, submitComment, removeComment, getPosts, getUserPosts } from '../redux/actions'
 
 function Post(props) {
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    function getIcon(type) {
+        if (type === "ride") return <GrBike />;
+        else if (type === "run") return <FaRunning />;
+        else return "?";
+    }
+
+    function updatePostsAfterAction(){
+        if (props.home) {
+            console.log("a")
+            setTimeout(() => {
+                props.dispatch(getPosts(props.accesstoken));
+            }, 1000)
+        }
+        else {
+            console.log("b")
+            setTimeout(() => {
+                props.dispatch(getUserPosts(props.accesstoken, props.selecteduser));
+            }, 1000)
+        }
+    }
+
+    const onCommentSubmit = (e) => {
+        e.preventDefault();
+        var formData = new FormData(e.target)
+        formData = Object.fromEntries(formData.entries())
+        props.dispatch(submitComment(props.accesstoken, formData, props.post.id))
+        updatePostsAfterAction();
+    }
+
+    
+    function reactionClicked(postid) {
+        props.dispatch(updateReaction(props.accesstoken, postid))
+        updatePostsAfterAction();
+    }
+
+    function removeCommentClicked(commentid) {
+        props.dispatch(removeComment(props.accesstoken, props.post.id, commentid))
+        updatePostsAfterAction();
+        setShowDeleteModal(false)
+    }
 
     return (
         <Card>
             <Card.Body>
-            <Map height="400px" mapId={uuidv4()} activityUrl={process.env.PUBLIC_URL + "/placeholder-gpx.gpx"} />
-                <Card.Title>{props.post.title}</Card.Title>
+                <Map height="400px" mapId={uuidv4()} activityUrl={props.post.gpxUrl} />
+                <Card.Title>{getIcon(props.post.type)} {props.post.name}</Card.Title>
                 <Card.Text>
-                    {props.post.desc}
+                    Opis
                 </Card.Text>
             </Card.Body>
             <Accordion>
                 <Card>
                     <Card.Header className="d-flex justify-content-between">
                         <Accordion.Toggle as={Button} variant="none" eventKey="0">
-                            <BsChatSquare /> {props.post.comments.length}
+                            <BsChatSquare /> {props.comments[props.post.id] === undefined ? 0 : props.comments[props.post.id].length}
                         </Accordion.Toggle>
-                        <Button variant="none"><BsHeart /> {props.post.likes}</Button>
+                        <Button variant="none" onClick={() => reactionClicked(props.post.id)}>{props.reactions[props.post.id] !== undefined && props.reactions[props.post.id].some(e => e.user.id === props.user.id) ? <BsHeartFill /> : <BsHeart />} {props.post.reactionsNumber}</Button>
                     </Card.Header>
                     <Accordion.Collapse eventKey="0">
                         <div>
-                            {props.post.comments.map((c, cidx) => (
+                            {props.comments[props.post.id] === undefined ? <div></div> : props.comments[props.post.id].map((c, cidx) => (
                                 <Card key={cidx}>
                                     <Card.Body>
-                                        <Card.Title>{c.user}</Card.Title>
+                                        <Card.Title>{c.user.firstName} {c.user.lastName} {props.user.id === c.user.id ? <ImBin color="red" size="20px" onClick={() => setShowDeleteModal(true)} /> : <div></div>}</Card.Title>
                                         {c.text}
                                     </Card.Body>
+
+                                    <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                                        <Modal.Header closeButton>
+                                            <Modal.Title>Czy na pewno chcesz usunąć komentarz? </Modal.Title>
+                                        </Modal.Header>
+                                        <div>
+                                            <Modal.Body>
+                                                Komentarz zostanie bezpowrotnie usunięty.
+                                             </Modal.Body>
+
+                                            <Modal.Footer>
+                                                <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>Anuluj</Button>
+                                                <Button variant="primary" onClick={() => removeCommentClicked(c.id)}>Tak</Button>
+                                            </Modal.Footer>
+                                        </div>
+                                    </Modal>
                                 </Card>
+
                             ))}
-                            <Form>
-                                <Form.Group controlId="comment">
-                                    <Form.Control as="textarea" rows={3} placeholder="Dodaj komentarz" />
+                            <Form onSubmit={onCommentSubmit}>
+                                <Form.Group controlId={props.post.id}>
+                                    <Form.Control as="textarea" name="text" rows={3} placeholder="Dodaj komentarz" required />
                                 </Form.Group>
                                 <div className="d-flex justify-content-end">
                                     <Button variant="primary" type="submit">
@@ -50,6 +113,8 @@ function Post(props) {
                 </Card>
             </Accordion>
         </Card>
+
+
     )
 }
 

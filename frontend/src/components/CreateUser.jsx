@@ -19,7 +19,9 @@ export default function CreateUser() {
         formData = Object.fromEntries(formData.entries())
         formData["email"] = user.email
         setFormData(formData)
-        setDoesRedirect(true);
+        setTimeout(() => {
+            setDoesRedirect(true);
+        }, 2000)
     }
 
     if (doesRedirect)
