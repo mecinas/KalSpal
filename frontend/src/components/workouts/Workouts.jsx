@@ -28,7 +28,6 @@ function Workouts(props) {
                             {props.workouts.map((workout, idx) => (
                                 <Tab.Pane key={idx} eventKey={`#${workout.id}`}>
                                     <Workout workout={workout} />
-
                                 </Tab.Pane>
                             ))}
                         </Tab.Content>

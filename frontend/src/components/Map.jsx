@@ -47,6 +47,17 @@ export default function Map({ activityUrl, height, mapId }) {
         }
     }
 
+    function getMapboxMapLayer(id) {
+        return L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
+            {
+                id: id,
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
+            })
+    }
+
     function init() {
         const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
@@ -61,15 +72,9 @@ export default function Map({ activityUrl, height, mapId }) {
                     id: 'cyclosm',
                     attribution: attribution
                 }),
-            "mapbox": L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
-                {
-                    id: 'mapbox/outdoors-v11',
-                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                    maxZoom: 18,
-                    tileSize: 512,
-                    zoomOffset: -1,
-                    accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
-                })
+            "mapbox-outdoors": getMapboxMapLayer('mapbox/outdoors-v11'),
+            "mapbox-streets": getMapboxMapLayer('mapbox/streets-v11'),
+            "mapbox-satellite": getMapboxMapLayer('mapbox/satellite-v9')
         }
 
         let localMap = L.map("map-" + mapId, {
@@ -83,7 +88,9 @@ export default function Map({ activityUrl, height, mapId }) {
         var baseMaps = {
             "OpenStreetMap": layers["osm"],
             "CyclOSM": layers["cyclosm"],
-            "Mapbox": layers["mapbox"]
+            "Mapbox Outdoors": layers["mapbox-outdoors"],
+            "Mapbox Streets": layers["mapbox-streets"],
+            "Mapbox Satellite": layers["mapbox-satellite"]
         };
 
         L.control.layers(baseMaps).addTo(localMap);

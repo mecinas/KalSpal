@@ -18,7 +18,7 @@ function Post(props) {
         else return "?";
     }
 
-    function updatePostsAfterAction(){
+    function updatePostsAfterAction() {
         if (props.home) {
             console.log("a")
             setTimeout(() => {
@@ -41,7 +41,7 @@ function Post(props) {
         updatePostsAfterAction();
     }
 
-    
+
     function reactionClicked(postid) {
         props.dispatch(updateReaction(props.accesstoken, postid))
         updatePostsAfterAction();
@@ -54,11 +54,11 @@ function Post(props) {
     }
 
     return (
-        <Card>
+        <Card className="m-3">
             <Card.Body>
-                <Map height="400px" mapId={uuidv4()} activityUrl={props.post.gpxUrl} />
+                <Map height="500px" mapId={uuidv4()} activityUrl={props.post.gpxUrl} />
                 <Card.Title>{getIcon(props.post.type)} {props.post.name}</Card.Title>
-                <Card.Text>
+                <Card.Text className="mx-3">
                     Opis
                 </Card.Text>
             </Card.Body>
@@ -73,10 +73,20 @@ function Post(props) {
                     <Accordion.Collapse eventKey="0">
                         <div>
                             {props.comments[props.post.id] === undefined ? <div></div> : props.comments[props.post.id].map((c, cidx) => (
-                                <Card key={cidx}>
+                                <Card key={cidx} className="m-3 bg-light">
                                     <Card.Body>
-                                        <Card.Title>{c.user.firstName} {c.user.lastName} {props.user.id === c.user.id ? <ImBin color="red" size="20px" onClick={() => setShowDeleteModal(true)} /> : <div></div>}</Card.Title>
-                                        {c.text}
+
+                                        <Card.Title>
+                                            <div className="row">
+                                                <div className="col-10">
+                                                    <small className="text-muted">{c.user.firstName} {c.user.lastName}</small>
+                                                </div>
+                                                <div className="col-2 text-right">
+                                                    {props.user.id === c.user.id ? <ImBin color="red" size="20px" onClick={() => setShowDeleteModal(true)} /> : <div></div>}
+                                                </div>
+                                            </div>
+                                        </Card.Title>
+                                        <Card.Text className="mx-3">{c.text}</Card.Text>
                                     </Card.Body>
 
                                     <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
@@ -86,7 +96,7 @@ function Post(props) {
                                         <div>
                                             <Modal.Body>
                                                 Komentarz zostanie bezpowrotnie usunięty.
-                                             </Modal.Body>
+                                            </Modal.Body>
 
                                             <Modal.Footer>
                                                 <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>Anuluj</Button>
@@ -97,7 +107,7 @@ function Post(props) {
                                 </Card>
 
                             ))}
-                            <Form onSubmit={onCommentSubmit}>
+                            <Form onSubmit={onCommentSubmit} className="m-3">
                                 <Form.Group controlId={props.post.id}>
                                     <Form.Control as="textarea" name="text" rows={3} placeholder="Dodaj komentarz" required />
                                 </Form.Group>

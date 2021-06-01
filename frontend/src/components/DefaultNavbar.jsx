@@ -22,7 +22,7 @@ const LogoutButton = () => {
 function DefaultNavbar(props) {
     const history = useHistory();
     const [selected, setSelected] = useState([]);
-    const [options, setOptions] = useState([{ label: "sth" }]);
+    const [options, setOptions] = useState([]);
 
     useEffect(() => {
         if (selected.length > 0) {
@@ -40,7 +40,7 @@ function DefaultNavbar(props) {
         if (props.allusers !== undefined) {
             var array_of_names = []
             props.allusers.map((user) => {
-                array_of_names.push({label: user.firstName + " " + user.lastName, id: user.id})
+                array_of_names.push({ label: user.firstName + " " + user.lastName, id: user.id })
             })
             setOptions(array_of_names)
         }
@@ -58,18 +58,21 @@ function DefaultNavbar(props) {
                         <Button className="btn-navbar" variant="outline-success" href="/">Dowiedz się więcej o nas</Button>
                     }
                     {props.isLoggedIn &&
-                        <div>
-                            {/* Zmiana przycisków na ikony serach na środku */}
-                            <Typeahead
-                                id="basic-example"
-                                onChange={setSelected}
-                                options={options}
-                                placeholder="Znajdź znajomych..."
-                                selected={selected}
-                            />
-                            <Button className="btn-navbar" variant="outline-success" href="/dashboard">Tablica</Button>
-                            <Button className="btn-navbar" variant="outline-success" href="/workouts">Treningi</Button>
-                            <Button className="btn-navbar" variant="outline-success" href="/account">Moje konto</Button>
+                        <div className="d-flex">
+                            {/* Zmiana przycisków na ikony search na środku */}
+                            <div className="mr-4">
+                                <Typeahead
+                                    id="basic-example"
+                                    onChange={setSelected}
+                                    options={options}
+                                    placeholder="Znajdź znajomych..."
+                                    selected={selected}
+                                />
+                            </div>
+
+                            <Button className="btn mr-4" variant="outline-success" href="/dashboard">Tablica</Button>
+                            <Button className="btn mr-4" variant="outline-success" href="/workouts">Treningi</Button>
+                            <Button className="btn mr-4" variant="outline-success" href="/account">Moje konto</Button>
                             <LogoutButton />
                         </div>
                     }
