@@ -24,7 +24,6 @@ export function reducer(state, action) {
     } else if (action.type === "ADD_COMMENTS") {
         return { ...state, comments: { ...state.comments, [action.post]: action.value } };
     } else if (action.type === "ADD_REACTIONS") {
-        console.log(state.reactions)
         return { ...state, reactions: { ...state.reactions, [action.post]: action.value } };
     } else if (action.type === "SET_FRIENDS") {
         return { ...state, friends: action.value };

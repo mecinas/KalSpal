@@ -45,7 +45,6 @@ function fetchPosts(dispatch, url, token) {
         .then((json) => {
             dispatch(setComments({}))
             dispatch(setReactions({}))
-            console.log(json)
             dispatch(setPosts(json))
             for (const workout in json) {
                 dispatch(getComments(token, json[workout].id))
@@ -258,6 +257,38 @@ export function deleteWorkout(token, id) {
     };
 }
 
+
+export function addFriend(token, id) {
+    var data = { user_id: id }
+    return (dispatch) => {
+        fetch(path + '/api/friend/invitation/send', {
+            method: 'POST',
+            headers: { 
+                "Authorization": `Bearer ${token}`,
+                'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .catch((e) => {
+                dispatch({ type: "ERROR", value: "Error connecting to API" });
+            });
+    };
+}
+
+export function getUserById(token, id) {
+    return (dispatch) => {
+        fetch(path + '/api/user/' + id, { headers: { "Authorization": `Bearer ${token}` } })
+            .then((res) =>
+                res.json())
+            .then((json) => {
+                json.birthDate = json.birthDate.slice(0, 10)
+                dispatch({ type: "SET_SELECTEDUSER", value: json })
+            })
+            .catch((e) => {
+                dispatch({ type: "ERROR", value: "Error connecting to API" });
+            });
+    };
+}
+
 export function getUser(token) {
     return (dispatch) => {
         fetchUser(
@@ -347,13 +378,6 @@ export function setIsLoggedIn(val) {
     return {
         type: "SET_ISLOGGEDIN",
         value: val
-    };
-}
-
-export function setSelectedUser(user) {
-    return {
-        type: "SET_SELECTEDUSER",
-        value: user
     };
 }
 
