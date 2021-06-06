@@ -5,7 +5,9 @@ import com.pw.kalspal.entity.Workout;
 import com.pw.kalspal.payload.response.WorkoutWithReactionInfoResponse;
 import com.pw.kalspal.repository.UserRepository;
 import com.pw.kalspal.repository.WorkoutRepository;
+import com.pw.kalspal.service.WorkoutService;
 import com.pw.kalspal.util.AuthID;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,9 @@ public class WorkoutController {
         this.workoutRepository = workoutRepository;
     }
 
+    @Autowired
+    WorkoutService workoutService;
+
     @PostMapping("/")
     public ResponseEntity<?> createNewWorkout(@RequestBody Workout workout, Authentication authentication) {
         String userId = AuthID.getID(authentication);
@@ -43,6 +48,7 @@ public class WorkoutController {
                 .path(workout.getId())
                 .toUriString() + ".gpx";
 
+        workoutService.calculateWorkoutStats(workout);
         workout.setGpxUrl(fileDownloadUri);
         workout.setUser(user);
 
@@ -87,5 +93,11 @@ public class WorkoutController {
         Workout workout = workoutRepository.findById(id.substring(0, id.length() - 4)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "GPX not found"));
         response.getOutputStream().write(workout.getGpx().getBytes());
         response.getOutputStream().close();
+    }
+
+    // dev only
+    @PostMapping("/dev/all_workouts")
+    public ResponseEntity<?> dev_all_workouts() {
+        return ResponseEntity.status(HttpStatus.OK).body(workoutRepository.findAll());
     }
 }

@@ -2,8 +2,8 @@ package com.pw.kalspal.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -52,6 +52,10 @@ public class Workout {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "workout", orphanRemoval = true)
     @JsonIgnore
     private List<Reaction> reactions;
+
+    @OneToOne(orphanRemoval = true)
+    @Nullable
+    private WorkoutStats workoutStats;
 
     public Workout(String gpx, String name, String type, LocalDateTime startTime, LocalDateTime endTime) {
         this.gpx = gpx;
@@ -138,5 +142,13 @@ public class Workout {
 
     public void setReactions(List<Reaction> reactions) {
         this.reactions = reactions;
+    }
+
+    public WorkoutStats getWorkoutStats() {
+        return workoutStats;
+    }
+
+    public void setWorkoutStats(WorkoutStats workoutStats) {
+        this.workoutStats = workoutStats;
     }
 }
