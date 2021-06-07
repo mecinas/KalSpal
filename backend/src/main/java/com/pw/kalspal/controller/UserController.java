@@ -73,7 +73,7 @@ public class UserController {
         if (userRepository.existsById(userId)) {
             return ResponseEntity.ok(new MessageResponse("Registered"));
         }
-        return ResponseEntity.ok(new MessageResponse("Not registered"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Not registered"));
     }
 
     @GetMapping("/all")
