@@ -12,6 +12,7 @@ const initialState = {
   selectedfriend: undefined,
   allusers: undefined,
   posts: [],
+  notifications: [],
   friends: [],
   comments: {},
   reactions: {}

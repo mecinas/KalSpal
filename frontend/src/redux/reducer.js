@@ -27,6 +27,8 @@ export function reducer(state, action) {
         return { ...state, reactions: { ...state.reactions, [action.post]: action.value } };
     } else if (action.type === "SET_FRIENDS") {
         return { ...state, friends: action.value };
+    }else if (action.type === "SET_NOTIFICATIONS") {
+        return { ...state, notifications: action.value };
     }
     return state;
 }

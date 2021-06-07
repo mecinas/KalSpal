@@ -263,11 +263,46 @@ export function addFriend(token, id) {
     return (dispatch) => {
         fetch(path + '/api/friend/invitation/send', {
             method: 'POST',
-            headers: { 
+            headers: {
                 "Authorization": `Bearer ${token}`,
-                'Content-Type': 'application/json' },
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(data)
         })
+            .catch((e) => {
+                dispatch({ type: "ERROR", value: "Error connecting to API" });
+            });
+    };
+}
+
+export function respondInvitation(token, id, response) {
+    var data = { 
+        invitation_id: id,
+        action: response 
+    }
+    return (dispatch) => {
+        fetch(path + '/api/friend/invitation/respond', {
+            method: 'POST',
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .catch((e) => {
+                dispatch({ type: "ERROR", value: "Error connecting to API" });
+            });
+    };
+}
+
+export function getNotifications(token) {
+    return (dispatch) => {
+        fetch(path + '/api/friend/invitation/received', { headers: { "Authorization": `Bearer ${token}` } })
+            .then((res) =>
+                res.json())
+            .then((json) => {
+                dispatch({ type: "SET_NOTIFICATIONS", value: json})
+            })
             .catch((e) => {
                 dispatch({ type: "ERROR", value: "Error connecting to API" });
             });

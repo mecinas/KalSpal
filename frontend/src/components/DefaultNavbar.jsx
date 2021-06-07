@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Navbar, Nav, Button, Image } from 'react-bootstrap'
+import { Navbar, Nav, Button, Image, Dropdown } from 'react-bootstrap'
 import { useAuth0 } from "@auth0/auth0-react";
 import { connect } from "react-redux";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { useHistory } from 'react-router-dom';
 
-import { getAllUsers } from '../redux/actions'
+import { getAllUsers, getNotifications, respondInvitation } from '../redux/actions'
 import logo from '../resources/company_logo.png'
 import "../styles/DefaultNavbar.css"
 
@@ -31,8 +31,9 @@ function DefaultNavbar(props) {
     }, [selected])
 
     useEffect(() => {
-        if (props.accesstoken) { //Magia dzieje się z isLogged?!?!
+        if (props.accesstoken) {
             props.dispatch(getAllUsers(props.accesstoken))
+            props.dispatch(getNotifications(props.accesstoken))
         }
     }, [props.accesstoken])
 
@@ -59,7 +60,6 @@ function DefaultNavbar(props) {
                     }
                     {props.isLoggedIn &&
                         <div className="d-flex">
-                            {/* Zmiana przycisków na ikony search na środku */}
                             <div className="mr-4">
                                 <Typeahead
                                     id="basic-example"
@@ -69,10 +69,40 @@ function DefaultNavbar(props) {
                                     selected={selected}
                                 />
                             </div>
+                            <Dropdown>
+                                <Dropdown.Toggle className="btn mr-4" variant="outline-success" id="dropdown-basic">
+                                    Powiadomienia
+                                </Dropdown.Toggle>
 
+                                <Dropdown.Menu>
+                                    {props.notifications.map((value, idx) => (
+                                        <Dropdown.Item key={idx}>
+                                            Użytkownik: {value.invitationAuthor.firstName} {value.invitationAuthor.lastName} dodał Cię do znajomych <br />
+                                            <Button 
+                                                onClick={() => props.dispatch(respondInvitation(props.accesstoken, value.id, "accept"))}>
+                                                    Potwierdź
+                                            </Button>
+                                            <Button 
+                                                onClick={() => props.dispatch(respondInvitation(props.accesstoken, value.id, "reject"))}>
+                                                    Odrzuć
+                                            </Button>
+                                        </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
                             <Button className="btn mr-4" variant="outline-success" href="/dashboard">Tablica</Button>
                             <Button className="btn mr-4" variant="outline-success" href="/workouts">Treningi</Button>
                             <Button className="btn mr-4" variant="outline-success" href="/account">Moje konto</Button>
+                            {/* {props.friends.map((e, idx) => (
+                                    <ListGroup.Item key={idx} className="container-fluid">
+                                        <Row>
+                                            <Col sm={2} className="pl-1 pr-1"><Avatar sauce={e.avatarURL} /></Col>
+                                            <Col sm={6} className="d-flex justify-content-center align-self-center" onClick={() => friendClicked(e.id)}>{e.firstName} {e.lastName}</Col>
+                                            <Col sm={2} className="d-flex justify-content-center"><Button variant="none" onClick={() => challangeClicked(e)}><BsTrophy /></Button></Col>
+                                            <Col sm={2} className="d-flex justify-content-center"><Button variant="none" onClick={() => meetingClicked(e)} ><BsCalendar /></Button></Col>
+                                        </Row>
+                                    </ListGroup.Item>
+                                ))} */}
                             <LogoutButton />
                         </div>
                     }
