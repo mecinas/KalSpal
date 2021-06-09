@@ -14,9 +14,9 @@ import java.util.stream.Stream;
 public class WorkoutStats {
 
     public static Map<String, Double> caloriesPerSecond = Stream.of(new Object[][]{
-            {"running", 0.195},
-            {"walking", 0.093},
-            {"other", 0.1},
+            {"running", 0.03},
+            {"walking", 0.02},
+            {"other", 0.025},
     }).collect(Collectors.toMap(data -> (String) data[0], data -> (Double) data[1]));
 
     @Id
@@ -28,6 +28,9 @@ public class WorkoutStats {
 
     @Nullable
     private Double totalTime;
+
+    @Nullable
+    private String timeString;
 
     @Nullable
     private Double maxElevation;
@@ -56,15 +59,6 @@ public class WorkoutStats {
 
     public void setTotalDistance(@Nullable Double totalDistance) {
         this.totalDistance = totalDistance;
-    }
-
-    @Nullable
-    public Double getTotalTime() {
-        return totalTime;
-    }
-
-    public void setTotalTime(@Nullable Double totalTime) {
-        this.totalTime = totalTime;
     }
 
     @Nullable
@@ -103,4 +97,23 @@ public class WorkoutStats {
     public void setCaloriesBurnedEstimate(@Nullable Double caloriesBurnedEstimate) {
         this.caloriesBurnedEstimate = caloriesBurnedEstimate;
     }
+
+    @Nullable
+    public String getTimeString() {
+        return timeString;
+    }
+
+    public void setTimeString(@Nullable String timeString) {
+        this.timeString = timeString;
+    }
+
+    @Nullable
+    public Double getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(@Nullable Double totalTime) {
+        this.totalTime = totalTime;
+    }
+
 }

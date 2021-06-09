@@ -14,8 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.DoubleStream;
 
@@ -28,7 +28,9 @@ public class WorkoutService {
 
     public void calculateWorkoutStats(Workout workout) {
 
-        WorkoutStats workoutStats = new WorkoutStats();
+        WorkoutStats workoutStats;
+        if (workout.getWorkoutStats() == null) workoutStats = new WorkoutStats();
+        else workoutStats = workout.getWorkoutStats();
 
         String gpxString = workout.getGpx();
         InputStream gpxStream = new ByteArrayInputStream(gpxString.getBytes(StandardCharsets.UTF_8));
@@ -42,19 +44,28 @@ public class WorkoutService {
             //totalDistance
             try {
                 double totalDistance = wpts.stream().collect(Geoid.WGS84.toPathLength()).doubleValue();
-                workoutStats.setTotalDistance(totalDistance);
+                workoutStats.setTotalDistance(totalDistance / 1000);
             } catch (Exception e) {
                 System.out.println("Couldn't calculate totalDistance for workout " + workout.getId());
             }
 
-            //totalTime
+            //totalTime avgSpeed
             try {
                 LocalDateTime timeEnd = wpts.get(wpts.size() - 1).getTime().get().toLocalDateTime();
                 LocalDateTime timeStart = wpts.get(0).getTime().get().toLocalDateTime();
-                long timeDiff = ChronoUnit.MILLIS.between(timeStart, timeEnd);
-                workoutStats.setTotalTime(timeDiff / 1000.);
+                Duration duration = Duration.between(timeStart, timeEnd);
+                String timeString = String.format("%02d", duration.toHours()) +
+                        ":" +
+                        String.format("%02d", duration.toMinutesPart()) +
+                        ":" +
+                        String.format("%02d", duration.toSecondsPart());
+                workoutStats.setTimeString(timeString);
+                workoutStats.setTotalTime(duration.toMillis() / 1000.);
+
+                Double averageSpeed = workoutStats.getTotalDistance() / (duration.getSeconds() / 3600.);
+                workoutStats.setAverageSpeed(averageSpeed);
             } catch (Exception e) {
-                System.out.println("Couldn't calculate totalTime for workout " + workout.getId());
+                System.out.println("Couldn't calculate totalTime/averageSpeed for workout " + workout.getId());
             }
 
             //minElevation
@@ -75,18 +86,10 @@ public class WorkoutService {
                 System.out.println("Couldn't calculate maxElevation for workout " + workout.getId());
             }
 
-            //averageSpeed
-            try {
-                Double averageSpeed = workoutStats.getTotalDistance() / workoutStats.getTotalTime();
-                workoutStats.setAverageSpeed(averageSpeed);
-            } catch (Exception e) {
-                System.out.println("Couldn't calculate averageSpeed for workout " + workout.getId());
-            }
-
             //caloriesBurnedEstimate
             try {
                 Double caloriesBurnedEstimate = workoutStats.getTotalDistance() *
-                        WorkoutStats.caloriesPerSecond.getOrDefault(workout.getType(),WorkoutStats.caloriesPerSecond.get("other"));
+                        WorkoutStats.caloriesPerSecond.getOrDefault(workout.getType(), WorkoutStats.caloriesPerSecond.get("other"));
                 workoutStats.setCaloriesBurnedEstimate(caloriesBurnedEstimate);
             } catch (Exception e) {
                 System.out.println("Couldn't calculate caloriesBurnedEstimate for workout " + workout.getId());

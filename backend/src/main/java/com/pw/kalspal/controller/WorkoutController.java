@@ -7,6 +7,7 @@ import com.pw.kalspal.repository.UserRepository;
 import com.pw.kalspal.repository.WorkoutRepository;
 import com.pw.kalspal.service.WorkoutService;
 import com.pw.kalspal.util.AuthID;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -98,6 +99,12 @@ public class WorkoutController {
     // dev only
     @PostMapping("/dev/all_workouts")
     public ResponseEntity<?> dev_all_workouts() {
-        return ResponseEntity.status(HttpStatus.OK).body(workoutRepository.findAll());
+        List<Workout> workouts = workoutRepository.findAll();
+        workouts.forEach(x -> {
+            workoutService.calculateWorkoutStats(x);
+            workoutRepository.save(x);
+        });
+        return ResponseEntity.status(HttpStatus.OK).body(workouts);
     }
+
 }
