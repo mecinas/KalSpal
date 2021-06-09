@@ -8,11 +8,7 @@ export default function Workout({ workout }) {
         <Card>
             <Card.Body>
                 <Card.Title>{workout.name}</Card.Title>
-                <Map height="500px" mapId={uuidv4()} activityUrl={workout.gpxUrl} />
-
-                <Card.Text>
-                    TODO
-                </Card.Text>
+                <Map height="500px" mapId={uuidv4()} workout={workout}/>
             </Card.Body>
         </Card>
     )

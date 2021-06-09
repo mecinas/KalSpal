@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import useScript from "../hooks/useScript";
 
-export default function Map({ activityUrl, height, mapId }) {
+export default function Map({ height, mapId, workout }) {
 
     const [map, setMap] = useState();
     const [gpx, setGpx] = useState();
@@ -26,7 +26,6 @@ export default function Map({ activityUrl, height, mapId }) {
                     map.fitBounds(gpx.getBounds());
                 } catch (error) {
                     console.error(error);
-                    alert("Nie można wczytać trasy!");
                 }
             }
         }
@@ -83,6 +82,8 @@ export default function Map({ activityUrl, height, mapId }) {
             layers: [layers["osm"]],
         });
 
+        localMap.zoomControl.setPosition('bottomright');
+
         setMap(localMap);
 
         var baseMaps = {
@@ -93,11 +94,11 @@ export default function Map({ activityUrl, height, mapId }) {
             "Mapbox Satellite": layers["mapbox-satellite"]
         };
 
-        L.control.layers(baseMaps).addTo(localMap);
+        L.control.layers(baseMaps, null, {position: 'topleft'}).addTo(localMap);
         L.control.scale().addTo(localMap);
 
-        if (activityUrl) {
-            loadGPX(activityUrl, localMap);
+        if (workout.gpxUrl) {
+            loadGPX(workout.gpxUrl, localMap);
         }
     }
 
@@ -137,6 +138,11 @@ export default function Map({ activityUrl, height, mapId }) {
         return Math.round(kms / hours * 100) / 100;
     }
 
+    function round(number, places) {
+        const p = Math.pow(10, places);
+        return Math.round(number * p) / p;
+    }
+
 
     return (
         <div>
@@ -144,9 +150,10 @@ export default function Map({ activityUrl, height, mapId }) {
             {
                 gpx &&
                 <ul className="list-group list-group-horizontal mb-3 d-flex">
-                    <li className="list-group-item flex-fill">Dystans: {getDistance()} km</li>
-                    <li className="list-group-item flex-fill">Czas: {getTime()}</li>
-                    <li className="list-group-item flex-fill">Średnia prędkość: {getAverageSpeed()} km/h</li>
+                    <li className="list-group-item flex-fill">Dystans: {round(workout.workoutStats.totalDistance, 2)} km</li>
+                    <li className="list-group-item flex-fill">Czas: {workout.workoutStats.timeString}</li>
+                    <li className="list-group-item flex-fill">Średnia prędkość: {round(workout.workoutStats.averageSpeed, 2)} km/h</li>
+                    <li className="list-group-item flex-fill">Spalone kalorie: {workout.workoutStats.caloriesBurnedEstimate}</li>
                 </ul>
             }
         </div>

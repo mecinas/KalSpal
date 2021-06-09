@@ -27,12 +27,24 @@ function User(props) {
                         <Card.Body>
                             {props.selecteduser &&
                                 <Card>
-
                                     <Card.Header>
                                         <Avatar sauce={props.selecteduser.avatarURL} /> <br />
-                                        Imię i nazwisko: {props.selecteduser.firstName} {props.selecteduser.lastName} <br />
-                                        Data urodzenia: {props.selecteduser.birthDate} <br />
-                                        Email: {props.selecteduser.email}
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">Imię i nazwisko</th>
+                                                    <td>{props.selecteduser.firstName} {props.selecteduser.lastName}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Data urodzenia</th>
+                                                    <td>{props.selecteduser.birthDate}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Email</th>
+                                                    <td>{props.selecteduser.email}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </Card.Header>
 
                                     <Button
@@ -56,14 +68,6 @@ function User(props) {
                                     </div>
                                 ))}
                             </div>
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col xl={3}>
-                    <Card>
-                        <Card.Header>Aktywności</Card.Header>
-                        <Card.Body>
-                            TBD
                         </Card.Body>
                     </Card>
                 </Col>

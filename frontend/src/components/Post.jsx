@@ -56,10 +56,9 @@ function Post(props) {
     return (
         <Card className="m-3">
             <Card.Body>
-                <Map height="500px" mapId={uuidv4()} activityUrl={props.post.gpxUrl} />
+                <Map height="500px" mapId={uuidv4()} workout={props.post}/>
                 <Card.Title>{getIcon(props.post.type)} {props.post.name}</Card.Title>
                 <Card.Text className="mx-3">
-                    Opis
                 </Card.Text>
             </Card.Body>
             <Accordion>

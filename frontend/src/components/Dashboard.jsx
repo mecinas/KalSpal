@@ -50,30 +50,7 @@ function Dashboard(props) {
         <div>
             <Container fluid>
                 <Row>
-                    <Col xl={3}>
-                        <Card>
-                            <Card.Header>Aktywność</Card.Header>
-                            <Card.Body>
-                                TBD
-                        </Card.Body>
-                        </Card>
-
-                    </Col >
-                    <Col xl={6}>
-                        <Card>
-                            <Card.Header>Tablica</Card.Header>
-                            <Card.Body >
-                                <div >
-                                    {props.posts.map((e, idx) => (
-                                        <div key={idx} className="mb-3">
-                                            <Post post={e} home={true}></Post>
-                                        </div>
-                                    ))}
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                    <Col xl={3}>
+                <Col xl={3}>
                         <Card>
                             <Card.Header>Znajomi</Card.Header>
                             <ListGroup variant="flush">
@@ -90,6 +67,22 @@ function Dashboard(props) {
                             </ListGroup>
                         </Card>
                     </Col>
+
+                    <Col xl={6}>
+                        <Card>
+                            <Card.Header>Tablica</Card.Header>
+                            <Card.Body >
+                                <div >
+                                    {props.posts.map((e, idx) => (
+                                        <div key={idx} className="mb-3">
+                                            <Post post={e} home={true}></Post>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    
                 </Row>
             </Container>
 
