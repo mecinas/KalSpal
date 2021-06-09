@@ -88,9 +88,9 @@ public class WorkoutService {
 
             //caloriesBurnedEstimate
             try {
-                Double caloriesBurnedEstimate = workoutStats.getTotalDistance() * 100 *
+                double caloriesBurnedEstimate = workoutStats.getTotalDistance() * 1000 *
                         WorkoutStats.caloriesPerSecond.getOrDefault(workout.getType(), WorkoutStats.caloriesPerSecond.get("other"));
-                workoutStats.setCaloriesBurnedEstimate(caloriesBurnedEstimate);
+                workoutStats.setCaloriesBurnedEstimate((int) Math.round(caloriesBurnedEstimate));
             } catch (Exception e) {
                 System.out.println("Couldn't calculate caloriesBurnedEstimate for workout " + workout.getId());
             }

@@ -42,7 +42,7 @@ public class WorkoutStats {
     private Double averageSpeed;
 
     @Nullable
-    private Double caloriesBurnedEstimate;
+    private Integer caloriesBurnedEstimate;
 
     public String getId() {
         return id;
@@ -90,11 +90,11 @@ public class WorkoutStats {
 
 
     @Nullable
-    public Double getCaloriesBurnedEstimate() {
+    public Integer getCaloriesBurnedEstimate() {
         return caloriesBurnedEstimate;
     }
 
-    public void setCaloriesBurnedEstimate(@Nullable Double caloriesBurnedEstimate) {
+    public void setCaloriesBurnedEstimate(@Nullable Integer caloriesBurnedEstimate) {
         this.caloriesBurnedEstimate = caloriesBurnedEstimate;
     }
 
