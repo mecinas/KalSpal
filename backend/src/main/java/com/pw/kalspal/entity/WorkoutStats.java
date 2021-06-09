@@ -13,9 +13,10 @@ import java.util.stream.Stream;
 @Entity
 public class WorkoutStats {
 
-    public static Map<String, Double> calories = Stream.of(new Object[][]{
-            {"running", 15.2},
-            {"walking", 13.3},
+    public static Map<String, Double> caloriesPerSecond = Stream.of(new Object[][]{
+            {"running", 0.195},
+            {"walking", 0.093},
+            {"other", 0.1},
     }).collect(Collectors.toMap(data -> (String) data[0], data -> (Double) data[1]));
 
     @Id

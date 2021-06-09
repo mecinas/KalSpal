@@ -35,9 +35,13 @@ public class WorkoutService {
         try {
             GPX gpx = GPX.read(gpxStream);
 
+            List<WayPoint> wpts = gpx.getWayPoints();
+            if (wpts.size() == 0)
+                wpts = gpx.getTracks().get(0).getSegments().get(0).getPoints();
+
             //totalDistance
             try {
-                double totalDistance = gpx.wayPoints().collect(Geoid.WGS84.toPathLength()).doubleValue();
+                double totalDistance = wpts.stream().collect(Geoid.WGS84.toPathLength()).doubleValue();
                 workoutStats.setTotalDistance(totalDistance);
             } catch (Exception e) {
                 System.out.println("Couldn't calculate totalDistance for workout " + workout.getId());
@@ -45,7 +49,6 @@ public class WorkoutService {
 
             //totalTime
             try {
-                List<WayPoint> wpts = gpx.getWayPoints();
                 LocalDateTime timeEnd = wpts.get(wpts.size() - 1).getTime().get().toLocalDateTime();
                 LocalDateTime timeStart = wpts.get(0).getTime().get().toLocalDateTime();
                 long timeDiff = ChronoUnit.MILLIS.between(timeStart, timeEnd);
@@ -56,7 +59,7 @@ public class WorkoutService {
 
             //minElevation
             try {
-                DoubleStream elevations = gpx.wayPoints().mapToDouble(wpt -> wpt.getElevation().get().doubleValue());
+                DoubleStream elevations = wpts.stream().mapToDouble(wpt -> wpt.getElevation().get().doubleValue());
                 Double minElevation = elevations.min().getAsDouble();
                 workoutStats.setMinElevation(minElevation);
             } catch (Exception e) {
@@ -65,7 +68,7 @@ public class WorkoutService {
 
             //maxElevation
             try {
-                DoubleStream elevations = gpx.wayPoints().mapToDouble(wpt -> wpt.getElevation().get().doubleValue());
+                DoubleStream elevations = wpts.stream().mapToDouble(wpt -> wpt.getElevation().get().doubleValue());
                 Double minElevation = elevations.max().getAsDouble();
                 workoutStats.setMaxElevation(minElevation);
             } catch (Exception e) {
@@ -82,7 +85,8 @@ public class WorkoutService {
 
             //caloriesBurnedEstimate
             try {
-                Double caloriesBurnedEstimate = workoutStats.getTotalDistance() * WorkoutStats.calories.get(workout.getType());
+                Double caloriesBurnedEstimate = workoutStats.getTotalDistance() *
+                        WorkoutStats.caloriesPerSecond.getOrDefault(workout.getType(),WorkoutStats.caloriesPerSecond.get("other"));
                 workoutStats.setCaloriesBurnedEstimate(caloriesBurnedEstimate);
             } catch (Exception e) {
                 System.out.println("Couldn't calculate caloriesBurnedEstimate for workout " + workout.getId());
