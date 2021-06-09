@@ -1,13 +1,10 @@
 package com.pw.kalspal.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -59,6 +56,14 @@ public class User implements Serializable {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "friends_id", referencedColumnName = "id"))
     private Set<User> friends;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invitationAuthor")
+    private List<Challenge> challengesSent;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invited", orphanRemoval = true)
+    private List<Challenge> challengesReceived;
 
     public User(@NotNull String id, @NotNull String firstName, @NotNull String lastName, @NotNull String email, @NotNull Date birthDate) {
         this.id = id;
@@ -158,6 +163,22 @@ public class User implements Serializable {
 
     public void setFriends(Set<User> friends) {
         this.friends = friends;
+    }
+
+    public List<Challenge> getChallengesSent() {
+        return challengesSent;
+    }
+
+    public void setChallengesSent(List<Challenge> challengesSent) {
+        this.challengesSent = challengesSent;
+    }
+
+    public List<Challenge> getChallengesReceived() {
+        return challengesReceived;
+    }
+
+    public void setChallengesReceived(List<Challenge> challengesReceived) {
+        this.challengesReceived = challengesReceived;
     }
 }
 

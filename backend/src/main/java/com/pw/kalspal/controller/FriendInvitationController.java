@@ -37,6 +37,15 @@ public class FriendInvitationController {
         if (user.getInvitationsSent().stream().anyMatch(friendInvitation -> friendInvitation.getInvited().equals(userInvited))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already been invited.");
         }
+        if (user.getInvitationsReceived().stream().anyMatch(friendInvitation -> friendInvitation.getInvitationAuthor().equals(userInvited))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have received invitation from this user.");
+        }
+        if(user.equals(userInvited)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot send invitation to yourself.");
+        }
+        if(user.getFriends().stream().anyMatch(u -> u.equals(userInvited))){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are already friends.");
+        }
         FriendInvitation friendInvitation = new FriendInvitation(user, userInvited);
         friendInvitationRepository.save(friendInvitation);
         return ResponseEntity.ok().build();
@@ -72,10 +81,12 @@ public class FriendInvitationController {
                 invitation.getInvitationAuthor().getFriends().add(user);
                 user.getInvitationsReceived().remove(invitation);
                 userRepository.save(user);
+                friendInvitationRepository.delete(invitation);
                 break;
             case "reject":
                 user.getInvitationsReceived().remove(invitation);
                 userRepository.save(user);
+                friendInvitationRepository.delete(invitation);
                 break;
             default:
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid action");

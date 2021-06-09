@@ -28,14 +28,13 @@ public class WorkoutController {
 
     private final UserRepository userRepository;
     private final WorkoutRepository workoutRepository;
+    @Autowired
+    WorkoutService workoutService;
 
     public WorkoutController(UserRepository userRepository, WorkoutRepository workoutRepository) {
         this.userRepository = userRepository;
         this.workoutRepository = workoutRepository;
     }
-
-    @Autowired
-    WorkoutService workoutService;
 
     @PostMapping("/")
     public ResponseEntity<?> createNewWorkout(@RequestBody Workout workout, Authentication authentication) {
@@ -94,6 +93,31 @@ public class WorkoutController {
         Workout workout = workoutRepository.findById(id.substring(0, id.length() - 4)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "GPX not found"));
         response.getOutputStream().write(workout.getGpx().getBytes());
         response.getOutputStream().close();
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> getDashboardWorkouts(Authentication authentication) {
+        String userId = AuthID.getID(authentication);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
+
+        List<WorkoutWithReactionInfoResponse> response = user
+                .getWorkouts()
+                .stream()
+                .map(WorkoutWithReactionInfoResponse::new).collect(Collectors.toList());
+        response.addAll(user.getFriends().stream().flatMap(u -> u.getWorkouts().stream()).map(WorkoutWithReactionInfoResponse::new).collect(Collectors.toList()));
+
+        response.sort((o1, o2) -> {
+            if (o1.getWorkout().getEndTime() == null || o2.getWorkout().getEndTime() == null)
+                return 0;
+            return o1.getWorkout().getEndTime().compareTo(o2.getWorkout().getEndTime());
+        });
+
+        response.forEach(w -> {
+            w.setReaction(w.getWorkout().getReactions().stream().anyMatch(r -> user.equals(w.getWorkout().getUser())));
+            w.setReactionsNumber(w.getWorkout().getReactions().size());
+        });
+        return ResponseEntity.ok(response);
     }
 
     // dev only
