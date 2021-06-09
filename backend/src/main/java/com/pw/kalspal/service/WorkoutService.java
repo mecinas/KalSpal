@@ -88,7 +88,7 @@ public class WorkoutService {
 
             //caloriesBurnedEstimate
             try {
-                Double caloriesBurnedEstimate = workoutStats.getTotalDistance() *
+                Double caloriesBurnedEstimate = workoutStats.getTotalDistance() * 100 *
                         WorkoutStats.caloriesPerSecond.getOrDefault(workout.getType(), WorkoutStats.caloriesPerSecond.get("other"));
                 workoutStats.setCaloriesBurnedEstimate(caloriesBurnedEstimate);
             } catch (Exception e) {
