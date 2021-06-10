@@ -61,7 +61,7 @@ function Dashboard(props) {
     return (
         <div>
             <Container fluid>
-                <Row>
+                <Row className="justify-content-center">
                     <Col xl={3}>
                         <Card>
                             <Card.Header>Znajomi</Card.Header>

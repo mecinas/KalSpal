@@ -15,7 +15,7 @@ function Post(props) {
     function getIcon(type) {
         if (type === "ride") return <GrBike />;
         else if (type === "run") return <FaRunning />;
-        else return "?";
+        else return " ";
     }
 
     function updatePostsAfterAction() {

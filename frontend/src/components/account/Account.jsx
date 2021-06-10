@@ -21,7 +21,7 @@ function Account(props) {
             <Row>
                 <AccountAvatar />
             </Row>
-            <Row>
+            <Row className="justify-content-center">
                 {props.user &&
                     <AccountInfoTable user={props.user} />
                 }

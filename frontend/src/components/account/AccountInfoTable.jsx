@@ -56,7 +56,7 @@ function AccountInfoTable(props) {
     }
 
     return (
-        <Col>
+        <Col xl={10}>
             {user &&
                 <EditProfileModal
                     showEditModal={showEditModal}

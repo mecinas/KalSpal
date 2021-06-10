@@ -153,7 +153,7 @@ export default function Map({ height, mapId, workout }) {
                     <li className="list-group-item flex-fill">Dystans: {round(workout.workoutStats.totalDistance, 2)} km</li>
                     <li className="list-group-item flex-fill">Czas: {workout.workoutStats.timeString}</li>
                     <li className="list-group-item flex-fill">Średnia prędkość: {round(workout.workoutStats.averageSpeed, 2)} km/h</li>
-                    <li className="list-group-item flex-fill">Spalone kalorie: {workout.workoutStats.caloriesBurnedEstimate}</li>
+                    <li className="list-group-item flex-fill">Kalorie: {workout.workoutStats.caloriesBurnedEstimate} kcal</li>
                 </ul>
             }
         </div>

@@ -82,9 +82,9 @@ function DefaultNavbar(props) {
                                 <Dropdown.Menu>
                                     {props.notifications.map((value, idx) => (
                                         <Dropdown.Item key={idx}>
-                                            <div class="card mb-2">
-                                                <div class="card-body">
-                                                    <p class="card-text m-2">Użytkownik {value.invitationAuthor.firstName} {value.invitationAuthor.lastName} zaprosił Cię do znajomych</p>
+                                            <div className="card mb-2">
+                                                <div className="card-body">
+                                                    <p className="card-text m-2">Użytkownik {value.invitationAuthor.firstName} {value.invitationAuthor.lastName} zaprosił Cię do znajomych</p>
                                                     <Button className="mx-2" variant="success"
                                                         onClick={() => props.dispatch(respondInvitation(props.accesstoken, value.id, "accept"))}>
                                                         Potwierdź
