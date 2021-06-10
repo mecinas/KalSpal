@@ -6,6 +6,7 @@ const initialState = {
   isLoggedIn: localStorage.getItem("isLogged"),
   errors: [],
   workouts: [],
+  registered: sessionStorage.getItem("isRegistered"),
   accesstoken: undefined,
   user: undefined,
   selecteduser: undefined,

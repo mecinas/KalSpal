@@ -2,30 +2,31 @@ import React, { useState } from "react";
 import { Form, Button, Jumbotron, Container } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react'
+import {createUser} from '../redux/actions'
+import {connect} from 'react-redux'
+import {cleanRegistered} from '../redux/actions'
 
 import '../styles/CreateUser.css'
-import { useRegisterAccount } from '../hooks/useConnection'
 
-export default function CreateUser() {
+function CreateUser(props) {
     const { user } = useAuth0();
 
-    const [formDataObj, setFormData] = useState({});
     const [doesRedirect, setDoesRedirect] = useState(false);
-    useRegisterAccount(formDataObj);
 
     const onFormSubmit = e => {
         e.preventDefault()
         var formData = new FormData(e.target)
         formData = Object.fromEntries(formData.entries())
         formData["email"] = user.email
-        setFormData(formData)
+        props.dispatch(createUser(props.accesstoken, formData))
         setTimeout(() => {
+            props.dispatch(cleanRegistered())
             setDoesRedirect(true);
         }, 2000)
     }
 
     if (doesRedirect)
-        return <Redirect to="/dashboard" />
+        return <Redirect to="/redirectAfterLogin" />
     else
         return (
             <Container onSubmit={onFormSubmit}>
@@ -68,3 +69,9 @@ export default function CreateUser() {
             </Container>
         )
 }
+
+function mapStateToProps(state) {
+    return state;
+}
+
+export default CreateUser = connect(mapStateToProps)(CreateUser);

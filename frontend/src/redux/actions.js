@@ -197,6 +197,8 @@ function postReaction(dispatch, url, token, id) {
         });
 }
 
+
+
 function postComment(dispatch, url, token, data) {
     fetch(url, {
         method: 'POST',
@@ -245,6 +247,27 @@ function deleteComment(dispatch, url, token) {
         });
 }
 
+export function cleanRegistered() {
+    return (dispatch) => {
+        dispatch({type:"CLEAN_REGISTERED" , value: false});
+    };
+}
+
+
+export function checkIfUserIsRegisetred(token) {
+    return (dispatch) => {
+        fetch(path + '/api/user/check/registration', {headers: { "Authorization": `Bearer ${token}` },})
+        .then((res) =>
+            res.json())
+        .then((json) => {
+            dispatch({type:"SET_REGISTERED" , value: json.message});
+        })
+            .catch((e) => {
+                dispatch({ type: "ERROR", value: "Error connecting to API" });
+            });
+    };
+}
+
 export function deleteWorkout(token, id) {
     return (dispatch) => {
         fetch(path + '/api/workout/' + id, {
@@ -262,6 +285,42 @@ export function addFriend(token, id) {
     var data = { user_id: id }
     return (dispatch) => {
         fetch(path + '/api/friend/invitation/send', {
+            method: 'POST',
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .catch((e) => {
+                dispatch({ type: "ERROR", value: "Error connecting to API" });
+            });
+    };
+}
+
+export function createUser(token, data) {
+    return (dispatch) => {
+        fetch(path + '/api/user/', {
+            method: 'POST',
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .catch((e) => {
+                dispatch({ type: "ERROR", value: "Error connecting to API" });
+            });
+    };
+}
+
+export function postChallange(token, id, content) {
+    var data = { 
+        invited: id,
+        text: content
+        }
+    return (dispatch) => {
+        fetch(path + '/api/challenge/', {
             method: 'POST',
             headers: {
                 "Authorization": `Bearer ${token}`,

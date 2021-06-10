@@ -29,6 +29,10 @@ export function reducer(state, action) {
         return { ...state, friends: action.value };
     }else if (action.type === "SET_NOTIFICATIONS") {
         return { ...state, notifications: action.value };
+    }else if (action.type === "SET_REGISTERED") {
+        return { ...state, registered: action.value };
+    }else if (action.type === "CLEAN_REGISTERED") {
+        return { ...state, registered: action.value };
     }
     return state;
 }

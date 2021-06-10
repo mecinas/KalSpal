@@ -6,20 +6,12 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { useHistory } from 'react-router-dom';
 
-import { getAllUsers, getNotifications, respondInvitation } from '../redux/actions'
+import { getAllUsers, getNotifications, respondInvitation, cleanRegistered } from '../redux/actions'
 import logo from '../resources/company_logo.png'
 import "../styles/DefaultNavbar.css"
 
-const LogoutButton = () => {
-    const { logout } = useAuth0();
-    return (
-        <Button variant="outline-success" onClick={() => logout({ returnTo: window.location.origin })}>
-            Wyloguj
-        </Button>
-    );
-};
-
 function DefaultNavbar(props) {
+    const { logout } = useAuth0();
     const history = useHistory();
     const [selected, setSelected] = useState([]);
     const [options, setOptions] = useState([]);
@@ -31,11 +23,11 @@ function DefaultNavbar(props) {
     }, [selected])
 
     useEffect(() => {
-        if (props.accesstoken) {
+        if (props.registered === "Registered" && props.accesstoken) {
             props.dispatch(getAllUsers(props.accesstoken))
             props.dispatch(getNotifications(props.accesstoken))
         }
-    }, [props.accesstoken])
+    }, [props.accesstoken, props.registered])
 
     useEffect(() => {
         if (props.allusers !== undefined) {
@@ -47,6 +39,19 @@ function DefaultNavbar(props) {
         }
     }, [props.allusers])
 
+    const LogoutButton = () => {
+        return (
+            <Button variant="outline-success" onClick={orderLogout}>
+                Wyloguj
+            </Button>
+        );
+    };
+
+    const orderLogout = () => {
+        sessionStorage.removeItem('isRegistered')
+        logout({ returnTo: window.location.origin })
+    }
+
     return (
         <div>
             <Navbar bg="warning" className="mb-3">
@@ -55,10 +60,10 @@ function DefaultNavbar(props) {
                 </Navbar.Brand>
 
                 <Nav className="ml-auto">
-                    {!props.isLoggedIn &&
+                    {props.registered !== "Registered" &&
                         <Button className="btn-navbar" variant="outline-success" href="/">Dowiedz się więcej o nas</Button>
                     }
-                    {props.isLoggedIn &&
+                    {props.registered === "Registered" &&
                         <div className="d-flex">
                             <div className="mr-4">
                                 <Typeahead

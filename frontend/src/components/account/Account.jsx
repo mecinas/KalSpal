@@ -16,7 +16,6 @@ function Account(props) {
         }
     }, [props.accesstoken]);
 
-
     return (
         <Container className="account_container">
             <Row>

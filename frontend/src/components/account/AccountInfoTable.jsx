@@ -5,7 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { connect } from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
-import {removeUser} from '../../redux/actions'
+import {removeUser, cleanRegistered} from '../../redux/actions'
 import EditProfileModal from './AccountEdit'
 import '../../styles/account/AccountInfoTable.css'
 
@@ -50,6 +50,7 @@ function AccountInfoTable(props) {
     
     const deleteUser = (e) => {
         props.dispatch(removeUser(props.accesstoken))
+        sessionStorage.removeItem('isRegistered')
         logout({ returnTo: window.location.origin })
         history.push("/")
     }
