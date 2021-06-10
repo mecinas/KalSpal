@@ -356,7 +356,7 @@ export function respondInvitation(token, id, response) {
 
 export function getNotifications(token) {
     return (dispatch) => {
-        fetch(path + '/api/friend/invitation/received', { headers: { "Authorization": `Bearer ${token}` } })
+        fetch(path + '/api/notification/all', { headers: { "Authorization": `Bearer ${token}` } })
             .then((res) =>
                 res.json())
             .then((json) => {
@@ -380,6 +380,18 @@ export function getUserById(token, id) {
             .catch((e) => {
                 dispatch({ type: "ERROR", value: "Error connecting to API" });
             });
+    };
+}
+
+export function deleteChallenge(token, id) {
+    return (dispatch) => {
+        fetch(path + '/api/challenge/' + id, {
+            method: 'DELETE',
+            headers: { "Authorization": `Bearer ${token}` },
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
     };
 }
 

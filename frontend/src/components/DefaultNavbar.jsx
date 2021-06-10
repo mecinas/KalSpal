@@ -6,7 +6,7 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { useHistory } from 'react-router-dom';
 
-import { getAllUsers, getNotifications, respondInvitation, cleanRegistered } from '../redux/actions'
+import { getAllUsers, getNotifications, respondInvitation, deleteChallenge } from '../redux/actions'
 import logo from '../resources/company_logo.png'
 import "../styles/DefaultNavbar.css"
 
@@ -81,21 +81,46 @@ function DefaultNavbar(props) {
 
                                 <Dropdown.Menu>
                                     {props.notifications.map((value, idx) => (
-                                        <Dropdown.Item key={idx}>
-                                            <div className="card mb-2">
-                                                <div className="card-body">
-                                                    <p className="card-text m-2">Użytkownik {value.invitationAuthor.firstName} {value.invitationAuthor.lastName} zaprosił Cię do znajomych</p>
-                                                    <Button className="mx-2" variant="success"
-                                                        onClick={() => props.dispatch(respondInvitation(props.accesstoken, value.id, "accept"))}>
-                                                        Potwierdź
-                                                    </Button>
-                                                    <Button className="mx-2" variant="secondary"
-                                                        onClick={() => props.dispatch(respondInvitation(props.accesstoken, value.id, "reject"))}>
-                                                        Odrzuć
-                                                    </Button>
+
+                                        value.text ? (
+                                            <Dropdown.Item key={idx}>
+                                                <div className="card my-2" >
+                                                    <div className="card-body">
+                                                        <div class="card-header">
+                                                            Użytkownik {value.invitationAuthor.firstName} {value.invitationAuthor.lastName} rzucił ci wyzwanie
+                                                        </div>
+                                                        <p className="card-text mx-4 my-2">
+                                                            {value.text.split(",")[0] + ","}
+                                                            <br />
+                                                            {value.text.split(",")[1]}
+                                                        </p>
+                                                        <Button className="mx-4" variant="secondary"
+                                                            onClick={() => props.dispatch(deleteChallenge(props.accesstoken, value.id))}>
+                                                            Usuń
+                                                        </Button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </Dropdown.Item>
+                                            </Dropdown.Item>
+                                        ) : (
+                                            <Dropdown.Item key={idx}>
+                                                <div className="card my-2">
+                                                    <div className="card-body">
+                                                        <div class="card-header">
+                                                            Użytkownik {value.invitationAuthor.firstName} {value.invitationAuthor.lastName} zaprosił cię do znajomych
+                                                        </div>
+                                                        <Button className="ml-4 mr-2 mt-2" variant="success"
+                                                            onClick={() => props.dispatch(respondInvitation(props.accesstoken, value.id, "accept"))}>
+                                                            Potwierdź
+                                                        </Button>
+                                                        <Button className="mx-2 mt-2" variant="secondary"
+                                                            onClick={() => props.dispatch(respondInvitation(props.accesstoken, value.id, "reject"))}>
+                                                            Odrzuć
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </Dropdown.Item>
+                                        )
+
                                     ))}
                                 </Dropdown.Menu>
                             </Dropdown>

@@ -41,20 +41,20 @@ function CreateUser(props) {
 
                 <Form>
                     <Form.Group controlId="formBasicName">
-                        <Form.Control type="text" name='firstName' placeholder="Wprowadź Imię" />
+                        <Form.Control required type="text" name='firstName' placeholder="Wprowadź Imię" />
                     </Form.Group>
 
                     <Form.Group controlId="formBasicSurname">
-                        <Form.Control type="text" name='lastName' placeholder="Wprowadź nazwisko" />
+                        <Form.Control required type="text" name='lastName' placeholder="Wprowadź nazwisko" />
                     </Form.Group>
 
                     <Form.Group controlId="formBasicDate">
                         <Form.Label>Data urodzin</Form.Label>
-                        <Form.Control type="date" name='birthDate' />
+                        <Form.Control required type="date" name='birthDate' />
                     </Form.Group>
 
                     <Form.Group className="checkbox-group" controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" />
+                        <Form.Check required type="checkbox" />
                         <Form.Label>Potwierdzam zapoznanie z <a href="/createUser">Regulaminem</a></Form.Label>
                     </Form.Group>
 

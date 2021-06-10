@@ -105,14 +105,14 @@ function Dashboard(props) {
                 {props.selectedfriend === undefined ? <div></div> :
                     <div>
                         <Modal.Body>
-                            <p>Czy chcesz rzucić wyzwanie użytkownikowi {props.selectedfriend.firstName} {props.selectedfriend.lastName}?.</p>
+                            <p>Czy chcesz rzucić wyzwanie użytkownikowi {props.selectedfriend.firstName} {props.selectedfriend.lastName}?</p>
                             <Form>
                                 <Form.Group>
-                                    <Form.Control type="text" name="distance" placeholder="Podaj odległość w km"></Form.Control>
+                                    <Form.Control required type="text" name="distance" placeholder="Podaj odległość w km"></Form.Control>
                                 </Form.Group>
 
                                 <Form.Group>
-                                    <Form.Control type="text" name="time" placeholder="Podaj czas aktywności w minutach"></Form.Control>
+                                    <Form.Control required type="text" name="time" placeholder="Podaj czas aktywności w minutach"></Form.Control>
                                 </Form.Group>
 
                                 <Form.Group>
@@ -123,7 +123,7 @@ function Dashboard(props) {
                                         custom
                                         name="activity"
                                     >
-                                        <option value="Null">Wybierz aktywność</option>
+                                        <option required value="Rower">Wybierz aktywność</option>
                                         <option value="Bieganie">Bieganie</option>
                                         <option value="Rower">Rower</option>
                                         <option value="Kajak">Kajak</option>
@@ -134,7 +134,7 @@ function Dashboard(props) {
                                     <Form.Label className="my-1 mr-2" htmlFor="inlineFormCustomSelectPref">
                                         Podaj czas zakończenia wyzwania
                                     </Form.Label>
-                                    <Form.Control type="date" name="date" placeholder="Podaj odległość"></Form.Control>
+                                    <Form.Control required type="date" name="date" placeholder="Podaj odległość"></Form.Control>
                                 </Form.Group>
 
 
