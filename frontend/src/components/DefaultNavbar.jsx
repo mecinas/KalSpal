@@ -105,7 +105,7 @@ function DefaultNavbar(props) {
                                             <Dropdown.Item key={idx}>
                                                 <div className="card my-2">
                                                     <div className="card-body">
-                                                        <div class="card-header">
+                                                        <div className="card-header">
                                                             Użytkownik {value.invitationAuthor.firstName} {value.invitationAuthor.lastName} zaprosił cię do znajomych
                                                         </div>
                                                         <Button className="ml-4 mr-2 mt-2" variant="success"
