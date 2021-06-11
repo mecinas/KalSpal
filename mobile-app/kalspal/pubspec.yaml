@@ -18,11 +18,20 @@ dependencies:
   flutter_dotenv: ^3.1.0
   location: ^3.2.4
   gpx: ^1.1.1
+  flutter_signin_button: ^2.0.0
+
 
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.8.0"
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icon.png"
+
 
 flutter:
   uses-material-design: true

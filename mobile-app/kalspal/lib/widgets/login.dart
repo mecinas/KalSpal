@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+
 class Login extends StatelessWidget {
   final Future<void> Function() loginAction;
   final String loginError;
@@ -11,13 +13,13 @@ class Login extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        const SizedBox(height: 100),
+        const SizedBox(height: 150),
         Image.asset(
           'assets/images/logo.png',
           height: 150,
           width: 150,
         ),
-        const SizedBox(height: 150),
+        const SizedBox(height: 180),
         FlatButton(
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 70),
           onPressed: () => loginAction(),
@@ -28,6 +30,12 @@ class Login extends StatelessWidget {
           ),
           color: Theme.of(context).accentColor,
           shape: StadiumBorder(),
+        ),
+        const SizedBox(height: 40),
+        SignInButton(
+          Buttons.Facebook,
+          text: "Zaloguj się przez Facebook",
+          onPressed: () {},
         ),
         const SizedBox(height: 80),
         Padding(

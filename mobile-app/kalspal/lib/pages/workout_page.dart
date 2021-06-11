@@ -36,7 +36,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: Theme.of(context).primaryColor, //change your color here
+          color: Theme.of(context).primaryColor,
         ),
         title: Text(
           "Twój Trening",
@@ -202,6 +202,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 isInitialized = true;
                 positions = [];
               });
+              _showMessage(false);
             },
           ),
         ),
@@ -210,6 +211,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
           textColor: Colors.white,
           child: Text('Ok'),
           onPressed: () async {
+            workoutName = textFieldController.text;
+
             Workout workout = new Workout(
                 name: workoutName,
                 type: workoutType,
@@ -222,11 +225,11 @@ class _WorkoutPageState extends State<WorkoutPage> {
 
             ApiManager apiManager = new ApiManager();
 
-            //bool isSuccess = await apiManager.addWorkout(accessToken, sWorkout);
-            bool isSuccess = await apiManager.addWorkout(accessToken, workout, workoutGpxString);
+            bool isSuccess = await apiManager.addWorkout(
+                accessToken, workout, workoutGpxString);
 
             if (isSuccess)
-              showSnackBar("Twój trening został pomyślnie udostepniony", 7);
+              _showMessage(true);
             else
               showSnackBar("Podczas dodawania treningu wystąpił błąd!", 10);
 
@@ -267,5 +270,31 @@ class _WorkoutPageState extends State<WorkoutPage> {
       ),
       duration: Duration(seconds: duration),
     ));
+  }
+
+  Future<void> _showMessage(bool wasUploaded) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Koniec Treningu!'),
+          content: SingleChildScrollView(
+              child: wasUploaded
+                  ? Text('Twój trening został zapisany i udostępniony.')
+                  : Text(
+                      'Twój trening został zapisany, ale nie udostępniony.')),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
