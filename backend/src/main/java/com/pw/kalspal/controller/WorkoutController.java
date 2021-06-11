@@ -2,6 +2,7 @@ package com.pw.kalspal.controller;
 
 import com.pw.kalspal.entity.User;
 import com.pw.kalspal.entity.Workout;
+import com.pw.kalspal.payload.request.FindWorkoutRequest;
 import com.pw.kalspal.payload.response.WorkoutWithReactionInfoResponse;
 import com.pw.kalspal.repository.UserRepository;
 import com.pw.kalspal.repository.WorkoutRepository;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -93,6 +95,16 @@ public class WorkoutController {
         Workout workout = workoutRepository.findById(id.substring(0, id.length() - 4)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "GPX not found"));
         response.getOutputStream().write(workout.getGpx().getBytes());
         response.getOutputStream().close();
+    }
+
+    @GetMapping(value = "/find")
+    public ResponseEntity<?> findWorkout(@RequestBody FindWorkoutRequest findWorkoutRequest) {
+        Optional<Workout> workout = workoutService.findWorkout(findWorkoutRequest);
+        if (workout.isPresent()) {
+            return ResponseEntity.ok(workout);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @GetMapping("/dashboard")

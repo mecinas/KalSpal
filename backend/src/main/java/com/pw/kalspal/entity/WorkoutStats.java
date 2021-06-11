@@ -42,6 +42,12 @@ public class WorkoutStats {
     private Double averageSpeed;
 
     @Nullable
+    private Double startLongitude;
+
+    @Nullable
+    private Double startLatitude;
+
+    @Nullable
     private Integer caloriesBurnedEstimate;
 
     public String getId() {
@@ -116,4 +122,21 @@ public class WorkoutStats {
         this.totalTime = totalTime;
     }
 
+    @Nullable
+    public Double getStartLongitude() {
+        return startLongitude;
+    }
+
+    public void setStartLongitude(@Nullable Double startLongitude) {
+        this.startLongitude = startLongitude;
+    }
+
+    @Nullable
+    public Double getStartLatitude() {
+        return startLatitude;
+    }
+
+    public void setStartLatitude(@Nullable Double startLatitude) {
+        this.startLatitude = startLatitude;
+    }
 }

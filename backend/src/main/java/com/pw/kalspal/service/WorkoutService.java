@@ -2,8 +2,12 @@ package com.pw.kalspal.service;
 
 import com.pw.kalspal.entity.Workout;
 import com.pw.kalspal.entity.WorkoutStats;
+import com.pw.kalspal.payload.request.FindWorkoutRequest;
+import com.pw.kalspal.repository.WorkoutRepository;
 import com.pw.kalspal.repository.WorkoutStatsRepository;
 import io.jenetics.jpx.GPX;
+import io.jenetics.jpx.Longitude;
+import io.jenetics.jpx.Point;
 import io.jenetics.jpx.WayPoint;
 import io.jenetics.jpx.geom.Geoid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.DoubleStream;
 
 @Service
@@ -25,6 +30,36 @@ public class WorkoutService {
 
     @Autowired
     WorkoutStatsRepository workoutStatsRepository;
+
+    @Autowired
+    WorkoutRepository workoutRepository;
+
+    public Optional<Workout> findWorkout(FindWorkoutRequest findWorkoutRequest) {
+        WayPoint wpt = WayPoint.of(findWorkoutRequest.getLatitude(), findWorkoutRequest.getLongitude());
+        Double range = findWorkoutRequest.getRange();
+        Double distance = findWorkoutRequest.getDistance();
+
+        Optional<Workout> bestCandidate = Optional.empty();
+        double candidateDistanceDiff = 100000.;
+        for (Workout workout : workoutRepository.findAll()) {
+            try {
+                WorkoutStats workoutStats = workout.getWorkoutStats();
+                WayPoint dbWpt = WayPoint.of(workoutStats.getStartLatitude(), workoutStats.getStartLongitude());
+                double dist = Geoid.WGS84.distance(wpt, dbWpt).doubleValue() / 1000.;
+                if (dist <= range) {
+                    double distanceDiff = Math.abs(workout.getWorkoutStats().getTotalDistance() - distance);
+                    if (distanceDiff < candidateDistanceDiff) {
+                        bestCandidate = Optional.of(workout);
+                        candidateDistanceDiff = distanceDiff;
+                    }
+                }
+            } catch (NullPointerException ignored) {
+
+            }
+        }
+
+        return bestCandidate;
+    }
 
     public void calculateWorkoutStats(Workout workout) {
 
@@ -40,6 +75,14 @@ public class WorkoutService {
             List<WayPoint> wpts = gpx.getWayPoints();
             if (wpts.size() == 0)
                 wpts = gpx.getTracks().get(0).getSegments().get(0).getPoints();
+
+            //start lon/lat
+            try {
+                workoutStats.setStartLatitude(wpts.get(0).getLatitude().doubleValue());
+                workoutStats.setStartLongitude(wpts.get(0).getLongitude().doubleValue());
+            } catch (Exception e) {
+                System.out.println("Couldn't calculate start lon/lat for workout " + workout.getId());
+            }
 
             //totalDistance
             try {
