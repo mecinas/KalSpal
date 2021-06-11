@@ -68,7 +68,7 @@ function User(props) {
                                                             <Button 
                                                                 className="mt-2"
                                                                 variant="primary"
-                                                                onClick={props.dispatch(addFriend(props.accesstoken, props.selecteduser.id))}
+                                                                onClick={(e) => props.dispatch(addFriend(props.accesstoken, props.selecteduser.id))}//Nie zmieniać!
                                                             >Zaproś do znajomych</Button>
                                                         ))
 
