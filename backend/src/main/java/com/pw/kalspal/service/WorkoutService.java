@@ -3,13 +3,14 @@ package com.pw.kalspal.service;
 import com.pw.kalspal.entity.Workout;
 import com.pw.kalspal.entity.WorkoutStats;
 import com.pw.kalspal.payload.request.FindWorkoutRequest;
+import com.pw.kalspal.repository.UserRepository;
 import com.pw.kalspal.repository.WorkoutRepository;
 import com.pw.kalspal.repository.WorkoutStatsRepository;
 import io.jenetics.jpx.GPX;
-import io.jenetics.jpx.Longitude;
-import io.jenetics.jpx.Point;
 import io.jenetics.jpx.WayPoint;
 import io.jenetics.jpx.geom.Geoid;
+import org.hibernate.jdbc.Work;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 @Service
@@ -33,6 +36,36 @@ public class WorkoutService {
 
     @Autowired
     WorkoutRepository workoutRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    public Map<String, WorkoutStats> workoutStatsSummary(String userId) {
+        WorkoutStats workoutStatsSummary = new WorkoutStats();
+        List<Workout> userWorkouts = userRepository.findById(userId).get().getWorkouts();
+        Map<String, WorkoutStats> statsByType = userWorkouts.stream().collect(Collectors.groupingBy(x -> x.getType())).entrySet().stream().map(workoutsGroup -> {
+            String type = workoutsGroup.getKey();
+            List<Workout> workouts = workoutsGroup.getValue();
+            Double totalDist = workouts.stream().mapToDouble(workout -> workout.getWorkoutStats().getTotalDistance()).sum();
+            double totalTime = workouts.stream().mapToDouble(workout -> workout.getWorkoutStats().getTotalTime()).sum();
+            int calories = workouts.stream().mapToInt(workout -> workout.getWorkoutStats().getCaloriesBurnedEstimate()).sum();
+            Duration duration = Duration.ofSeconds(Math.round(totalTime));
+            String timeString = String.format("%02d", duration.toHours()) +
+                    ":" +
+                    String.format("%02d", duration.toMinutesPart()) +
+                    ":" +
+                    String.format("%02d", duration.toSecondsPart());
+            Double averageSpeed = totalDist / (duration.getSeconds() / 3600.);
+            WorkoutStats workoutStats = new WorkoutStats();
+            workoutStats.setTotalDistance(totalDist);
+            workoutStats.setTotalTime(totalTime);
+            workoutStats.setTimeString(timeString);
+            workoutStats.setCaloriesBurnedEstimate(calories);
+            workoutStats.setAverageSpeed(averageSpeed);
+            return new Pair<String, WorkoutStats>(type, workoutStats);
+        }).collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+        return statsByType;
+    }
 
     public Optional<Workout> findWorkout(FindWorkoutRequest findWorkoutRequest) {
         WayPoint wpt = WayPoint.of(findWorkoutRequest.getLatitude(), findWorkoutRequest.getLongitude());

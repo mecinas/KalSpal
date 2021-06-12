@@ -2,6 +2,7 @@ package com.pw.kalspal.controller;
 
 import com.pw.kalspal.entity.User;
 import com.pw.kalspal.entity.Workout;
+import com.pw.kalspal.entity.WorkoutStats;
 import com.pw.kalspal.payload.request.FindWorkoutRequest;
 import com.pw.kalspal.payload.response.WorkoutWithReactionInfoResponse;
 import com.pw.kalspal.repository.UserRepository;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -105,6 +107,16 @@ public class WorkoutController {
         } else {
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<?> getWorkoutSummary(Authentication authentication) {
+        String userId = AuthID.getID(authentication);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User authenticated, but not found in database. ID: " + authentication.getName()));
+
+        Map<String, WorkoutStats> workoutsSummary = workoutService.workoutStatsSummary(userId);
+        return ResponseEntity.ok(workoutsSummary);
     }
 
     @GetMapping("/dashboard")
