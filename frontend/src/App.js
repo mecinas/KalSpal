@@ -11,6 +11,7 @@ import RedirectAfterLogin from "./components/RedirectAfterLogin"
 import Account from "./components/account/Account"
 import Workouts from './components/workouts/Workouts'
 import User from "./components/User"
+import FindWorkout from "./components/FindWorkout"
 import { useAuth0 } from '@auth0/auth0-react'
 import PrivateRoute from './components/PrivateRoute'
 import { setAccessToken, setIsLoggedIn } from './redux/actions'
@@ -76,6 +77,9 @@ function App(props) {
           </PrivateRoute>
 
           <PrivateRoute path="/workouts" component={Workouts}>
+          </PrivateRoute>
+
+          <PrivateRoute path="/findworkout" component={FindWorkout}>
           </PrivateRoute>
         </Switch>
       </Router>

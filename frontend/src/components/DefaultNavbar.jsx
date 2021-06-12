@@ -126,6 +126,7 @@ function DefaultNavbar(props) {
                             </Dropdown>
                             <Button className="btn mr-4" variant="outline-success" href="/dashboard">Tablica</Button>
                             <Button className="btn mr-4" variant="outline-success" href="/workouts">Treningi</Button>
+                            <Button className="btn mr-4" variant="outline-success" href="/findworkout">Podpowiedz trasę</Button>
                             <Button className="btn mr-4" variant="outline-success" href="/account">Moje konto</Button>
                             {/* {props.friends.map((e, idx) => (
                                     <ListGroup.Item key={idx} className="container-fluid">

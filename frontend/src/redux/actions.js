@@ -107,7 +107,7 @@ export function getPosts(token) {
     return (dispatch) => {
         fetchPosts(
             dispatch,
-            path + '/api/workout/',
+            path + '/api/workout/dashboard',
             token
         );
     };
@@ -334,6 +334,36 @@ export function postChallange(token, id, content) {
     };
 }
 
+export function getFindWorkout(token, data) {
+    return (dispatch) => {
+        fetch(path + '/api/workout/find?' + new URLSearchParams(data), {
+            method: 'GET',
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+        }).then((res) =>{
+            console.log(res.status)
+            if (res.status === 200){
+                return res.json()
+            } else {
+                alert("Nie znaleziono trasy")
+                return undefined
+            }
+        })
+        .then((json) => {
+            if (json !== undefined){
+                dispatch(setFoundWorkout({}))
+                dispatch(setFoundWorkout(json))
+            }
+        })
+            .catch((e) => {
+                console.log(e)
+                dispatch({ type: "ERROR", value: "Error connecting to API" });
+            });
+    };
+}
+
 export function respondInvitation(token, id, response) {
     var data = { 
         invitation_id: id,
@@ -543,5 +573,12 @@ export function setReaction(post) {
     return {
         type: "SET_REACTION",
         value: post
+    };
+}
+
+export function setFoundWorkout(data) {
+    return {
+        type: "SET_FOUNDWORKOUT",
+        value: data
     };
 }

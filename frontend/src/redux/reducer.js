@@ -33,6 +33,8 @@ export function reducer(state, action) {
         return { ...state, registered: action.value };
     }else if (action.type === "CLEAN_REGISTERED") {
         return { ...state, registered: action.value };
+    }else if (action.type === "SET_FOUNDWORKOUT") {
+        return { ...state, foundWorkout: action.value };
     }
     return state;
 }
