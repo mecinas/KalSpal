@@ -62,8 +62,8 @@ function Dashboard(props) {
     }
 
     function getIcon(type) {
-        if (type === "ride") return <GrBike />;
-        else if (type === "run") return <FaRunning />;
+        if (type === "ride") return <GrBike size={30}/>;
+        else if (type === "run") return <FaRunning size={30}/>;
         else return " ";
     }
 
@@ -111,10 +111,27 @@ function Dashboard(props) {
                                     {Object.keys(props.workoutSummary).map((e, idx) => (
                                         <ListGroup.Item key={idx} className="container-fluid">
                                             {getIcon(e)}<br />
-                                            Przebyty dystans: {props.workoutSummary[e]["totalDistance"].toFixed(1)} km<br />
-                                            Czas: {props.workoutSummary[e]["timeString"]}<br />
-                                            Średnia prędkość: {props.workoutSummary[e]["averageSpeed"].toFixed(1)} km/h<br />
-                                            Spalone kalorie: {props.workoutSummary[e]["caloriesBurnedEstimate"]}
+
+                                            <table className="table my-2">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">Przebyty dystans</th>
+                                                        <td>{props.workoutSummary[e]["totalDistance"].toFixed(1)} km</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Czas</th>
+                                                        <td>{props.workoutSummary[e]["timeString"]}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Średnia prędkość</th>
+                                                        <td>{props.workoutSummary[e]["averageSpeed"].toFixed(1)} km/h</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Spalone kalorie</th>
+                                                        <td>{props.workoutSummary[e]["caloriesBurnedEstimate"]}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </ListGroup.Item>
                                     ))}
                                 </ListGroup>

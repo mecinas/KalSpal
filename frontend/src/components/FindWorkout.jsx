@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 
 function FindWorkout(props) {
     const mapId = 1
-    const height = "500px"
+    const height = "400px"
     const [map, setMap] = useState();
     const [width, setWidth] = useState();
     const [lat, setLat] = useState("");
@@ -138,7 +138,7 @@ function FindWorkout(props) {
                     <Card>
                         <Card.Header>Wyszukaj trasę</Card.Header>
                         <Card.Body >
-                            <Row className="mx-3">Wybierz punkt początkowy:</Row>
+                            <Row className="m-3">Wybierz punkt początkowy:</Row>
                             <div>
                                 <div id={"map-" + mapId} ref={ref} style={{ height: height }}></div>
                             </div>
@@ -164,7 +164,7 @@ function FindWorkout(props) {
                     <Card>
                         <Card.Header>Najlepsza trasa</Card.Header>
                         <Card.Body>
-                            {props.foundWorkout === undefined || props.foundWorkout.id === undefined ? <Row className="mx-3">Tu pojawi się znaleziona trasa</Row>: <Map height="500px" mapId={uuidv4()} workout={props.foundWorkout}/>}
+                            {props.foundWorkout === undefined || props.foundWorkout.id === undefined ? <Row className="mx-3 mt-3">Tu pojawi się znaleziona trasa</Row>: <Map height="500px" mapId={uuidv4()} workout={props.foundWorkout}/>}
                         </Card.Body>
                     </Card>
                 </Col>
