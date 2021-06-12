@@ -100,8 +100,13 @@ public class WorkoutController {
     }
 
     @GetMapping(value = "/find")
-    public ResponseEntity<?> findWorkout(@RequestBody FindWorkoutRequest findWorkoutRequest) {
-        Optional<Workout> workout = workoutService.findWorkout(findWorkoutRequest);
+    public ResponseEntity<?> findWorkout(
+            @RequestParam(value = "latitude") double latitude,
+            @RequestParam(value = "longitude") double longitude,
+            @RequestParam(value = "range") double range,
+            @RequestParam(value = "distance") double distance
+    ) {
+        Optional<Workout> workout = workoutService.findWorkout(new FindWorkoutRequest(latitude, longitude, range, distance));
         if (workout.isPresent()) {
             return ResponseEntity.ok(workout);
         } else {

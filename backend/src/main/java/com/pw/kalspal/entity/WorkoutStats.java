@@ -42,9 +42,11 @@ public class WorkoutStats {
     private Double averageSpeed;
 
     @Nullable
+    @JsonIgnore
     private Double startLongitude;
 
     @Nullable
+    @JsonIgnore
     private Double startLatitude;
 
     @Nullable
