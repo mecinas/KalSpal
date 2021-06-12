@@ -17,7 +17,8 @@ const initialState = {
   friends: [],
   comments: {},
   reactions: {},
-  foundWorkout: {}
+  foundWorkout: {},
+  workoutSummary: {}
 };
 
 const store = createStore(reducer, initialState, applyMiddleware(thunk));

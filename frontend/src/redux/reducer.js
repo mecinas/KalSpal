@@ -27,14 +27,16 @@ export function reducer(state, action) {
         return { ...state, reactions: { ...state.reactions, [action.post]: action.value } };
     } else if (action.type === "SET_FRIENDS") {
         return { ...state, friends: action.value };
-    }else if (action.type === "SET_NOTIFICATIONS") {
+    } else if (action.type === "SET_NOTIFICATIONS") {
         return { ...state, notifications: action.value };
-    }else if (action.type === "SET_REGISTERED") {
+    } else if (action.type === "SET_REGISTERED") {
         return { ...state, registered: action.value };
-    }else if (action.type === "CLEAN_REGISTERED") {
+    } else if (action.type === "CLEAN_REGISTERED") {
         return { ...state, registered: action.value };
-    }else if (action.type === "SET_FOUNDWORKOUT") {
+    } else if (action.type === "SET_FOUNDWORKOUT") {
         return { ...state, foundWorkout: action.value };
+    } else if (action.type === "SET_WORKOUTSUMMARY") {
+        return { ...state, workoutSummary: action.value };
     }
     return state;
 }

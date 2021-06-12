@@ -7,8 +7,10 @@ import {
 import Post from './Post'
 import Avatar from './Avatar'
 import { BsTrophy, BsCalendar } from 'react-icons/bs'
+import { GrBike } from 'react-icons/gr'
+import { FaRunning } from 'react-icons/fa'
 import { useHistory } from 'react-router-dom';
-import { setSelectedFriend, getPosts, getUser, getFriends, postChallange } from '../redux/actions'
+import { setSelectedFriend, getPosts, getUser, getFriends, postChallange, getWorkoutSummary } from '../redux/actions'
 
 import placeholder from "../resources/placeholder-1.png"
 import "../styles/Dashboard.css"
@@ -23,6 +25,7 @@ function Dashboard(props) {
             props.dispatch(getUser(props.accesstoken));
             props.dispatch(getPosts(props.accesstoken));
             props.dispatch(getFriends(props.accesstoken));
+            props.dispatch(getWorkoutSummary(props.accesstoken));
         }
     }, [props.accesstoken]);
 
@@ -58,6 +61,12 @@ function Dashboard(props) {
         challangeClosed()
     }
 
+    function getIcon(type) {
+        if (type === "ride") return <GrBike />;
+        else if (type === "run") return <FaRunning />;
+        else return " ";
+    }
+
     return (
         <div>
             <Container fluid>
@@ -70,9 +79,8 @@ function Dashboard(props) {
                                     <ListGroup.Item key={idx} className="container-fluid">
                                         <Row>
                                             <Col sm={2} className="pl-1 pr-1"><Avatar sauce={e.avatarURL} /></Col>
-                                            <Col sm={6} className="d-flex justify-content-center align-self-center" onClick={() => friendClicked(e.id)}>{e.firstName} {e.lastName}</Col>
+                                            <Col sm={8} className="d-flex justify-content-center align-self-center" onClick={() => friendClicked(e.id)}>{e.firstName} {e.lastName}</Col>
                                             <Col sm={2} className="d-flex justify-content-center"><Button variant="none" onClick={() => challangeClicked(e)}><BsTrophy /></Button></Col>
-                                            <Col sm={2} className="d-flex justify-content-center"><Button variant="none" onClick={() => meetingClicked(e)} ><BsCalendar /></Button></Col>
                                         </Row>
                                     </ListGroup.Item>
                                 ))}
@@ -91,6 +99,25 @@ function Dashboard(props) {
                                         </div>
                                     ))}
                                 </div>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+
+                    <Col xl={3}>
+                        <Card>
+                            <Card.Header>Podsumowanie aktywności</Card.Header>
+                            <Card.Body>
+                                <ListGroup variant="flush">
+                                    {Object.keys(props.workoutSummary).map((e, idx) => (
+                                        <ListGroup.Item key={idx} className="container-fluid">
+                                            {getIcon(e)}<br />
+                                            Przebyty dystans: {props.workoutSummary[e]["totalDistance"].toFixed(1)} km<br />
+                                            Czas: {props.workoutSummary[e]["timeString"]}<br />
+                                            Średnia prędkość: {props.workoutSummary[e]["averageSpeed"].toFixed(1)} km/h<br />
+                                            Spalone kalorie: {props.workoutSummary[e]["caloriesBurnedEstimate"]}
+                                        </ListGroup.Item>
+                                    ))}
+                                </ListGroup>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -170,6 +197,7 @@ function Dashboard(props) {
         </div>
     )
 }
+//<Col sm={2} className="d-flex justify-content-center"><Button variant="none" onClick={() => meetingClicked(e)} ><BsCalendar /></Button></Col>
 
 
 function mapStateToProps(state) {

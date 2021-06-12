@@ -14,6 +14,18 @@ function fetchWorkouts(dispatch, url, token) {
         });
 }
 
+function fetchWorkoutSummary(dispatch, url, token) {
+    fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
+        .then((res) =>
+            res.json())
+        .then((json) => {
+            dispatch(setWorkoutSummary(json));
+        })
+        .catch((e) => {
+            dispatch({ type: "ERROR", value: "Error connecting to API" });
+        });
+}
+
 function fetchUser(dispatch, url, token) {
     fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
         .then((res) =>
@@ -150,6 +162,16 @@ export function getFriends(token) {
         fetchFriends(
             dispatch,
             path + '/api/friend/',
+            token
+        );
+    };
+}
+
+export function getWorkoutSummary(token) {
+    return (dispatch) => {
+        fetchWorkoutSummary(
+            dispatch,
+            path + '/api/workout/summary',
             token
         );
     };
@@ -579,6 +601,13 @@ export function setReaction(post) {
 export function setFoundWorkout(data) {
     return {
         type: "SET_FOUNDWORKOUT",
+        value: data
+    };
+}
+
+export function setWorkoutSummary(data) {
+    return {
+        type: "SET_WORKOUTSUMMARY",
         value: data
     };
 }
